@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 class OnboardingViewModel : ViewModel() {
     private val _currentPage = MutableStateFlow(0)
-    val currentPage: StateFlow<Int> = _currentPage
+    val currentPage: StateFlow<Int> get() = _currentPage
 
     fun updatePage(page: Int) {
         _currentPage.value = page
@@ -40,8 +40,6 @@ class OnboardingViewModel : ViewModel() {
                     withStyle(style = SpanStyle(color = Primary)) {
                         append(words[3])
                     }
-                    append("")
-                    append(words.drop(4).joinToString(""))
                     append("!")
                 }
                 1 -> {

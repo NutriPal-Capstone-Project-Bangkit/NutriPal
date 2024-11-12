@@ -20,9 +20,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.example.nutripal.R
-import com.example.nutripal.ui.components.AuthHeaderImage
-import com.example.nutripal.ui.components.EmailField
-import com.example.nutripal.ui.components.PasswordField
+import com.example.nutripal.ui.component.AuthHeaderImage
+import com.example.nutripal.ui.component.EmailField
+import com.example.nutripal.ui.component.PasswordField
 import com.example.nutripal.ui.custom.CustomCanvas
 import com.example.nutripal.ui.custom.CustomCheckbox
 import com.example.nutripal.ui.theme.Disabled
@@ -32,6 +32,7 @@ import com.example.nutripal.ui.theme.Secondary
 import com.example.nutripal.ui.theme.darkGray
 import com.example.nutripal.viewmodel.LoginViewModel
 
+@Suppress("FunctionName")
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavController) {
     var email by remember { mutableStateOf("") }

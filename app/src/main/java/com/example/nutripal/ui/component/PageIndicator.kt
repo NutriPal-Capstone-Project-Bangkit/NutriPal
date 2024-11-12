@@ -14,15 +14,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutripal.ui.theme.Primary
 
+@Suppress("FunctionName")
 @Composable
-fun PageIndicator(currentPage: Int) {
+fun PageIndicator(
+    currentPage: Int,
+    pageCount: Int
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center
     ) {
-        repeat(3) { index ->
+        repeat(pageCount) { index ->
             Box(
                 modifier = Modifier
                     .padding(horizontal = 6.dp)
@@ -36,8 +40,9 @@ fun PageIndicator(currentPage: Int) {
     }
 }
 
+@Suppress("FunctionName")
 @Preview(showBackground = true)
 @Composable
 fun PageIndicatorPreview() {
-    PageIndicator(0)
+    PageIndicator(currentPage = 0, pageCount = 2)
 }

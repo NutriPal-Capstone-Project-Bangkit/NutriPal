@@ -1,4 +1,4 @@
-package com.example.nutripal.ui.components
+package com.example.nutripal.ui.component
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -13,6 +13,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.nutripal.ui.theme.NunitoFontFamily
 
+@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailField(email: String, onValueChange: (String) -> Unit) {

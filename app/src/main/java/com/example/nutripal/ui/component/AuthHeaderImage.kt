@@ -1,4 +1,4 @@
-package com.example.nutripal.ui.components
+package com.example.nutripal.ui.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
@@ -9,6 +9,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.nutripal.R
 
+@Suppress("FunctionName")
 @Composable
 fun AuthHeaderImage(modifier: Modifier = Modifier) {
     Image(

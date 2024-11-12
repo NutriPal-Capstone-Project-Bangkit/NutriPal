@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutripal.ui.theme.Primary
 
+@Suppress("FunctionName")
 @Composable
 fun CustomNextButton(onClick: () -> Unit) {
     IconButton(
@@ -39,6 +40,7 @@ fun CustomNextButton(onClick: () -> Unit) {
     }
 }
 
+@Suppress("FunctionName")
 @Preview
 @Composable
 fun NextButtonPreview() {

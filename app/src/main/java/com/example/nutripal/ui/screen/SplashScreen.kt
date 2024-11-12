@@ -10,10 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -22,13 +20,14 @@ import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.viewmodel.SplashViewModel
 import kotlinx.coroutines.delay
 
+@Suppress("FunctionName")
 @Composable
 fun SplashScreen(
     navController: NavController,
     splashViewModel: SplashViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
-    var alpha by remember { mutableStateOf(0f) }
+    var alpha by remember { mutableFloatStateOf(0f) }
 
     val animatedAlpha by animateFloatAsState(
         targetValue = alpha,
@@ -55,6 +54,7 @@ fun SplashScreen(
     }
 }
 
+@Suppress("FunctionName")
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {
