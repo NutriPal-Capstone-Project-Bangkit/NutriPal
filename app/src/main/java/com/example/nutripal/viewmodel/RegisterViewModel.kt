@@ -12,12 +12,14 @@ class RegisterViewModel : ViewModel() {
     private var confirmPassword = mutableStateOf("")
     private var isRegisterSuccess = mutableStateOf(false)
     private var errorMessage = mutableStateOf("")
+    var isChecked = mutableStateOf(false)
 
     private val isRegisterEnabled: Boolean
         get() = username.value.isNotEmpty() &&
                 isValidEmail(email.value) &&
                 password.value.isNotEmpty() &&
-                password.value == confirmPassword.value
+                password.value == confirmPassword.value &&
+                isChecked.value
 
     private fun isValidEmail(email: String): Boolean {
         val emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"

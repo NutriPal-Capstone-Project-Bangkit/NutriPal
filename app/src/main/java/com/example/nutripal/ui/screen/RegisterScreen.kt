@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.foundation.background
@@ -20,15 +22,14 @@ import androidx.navigation.NavController
 import com.example.nutripal.ui.component.AuthHeaderImage
 import com.example.nutripal.ui.component.EmailField
 import com.example.nutripal.ui.component.PasswordField
+import com.example.nutripal.ui.component.ToggleGreenButton
 import com.example.nutripal.ui.custom.CustomCanvas
 import com.example.nutripal.ui.custom.CustomCheckbox
-import com.example.nutripal.ui.theme.Disabled
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.darkGray
 import com.example.nutripal.viewmodel.RegisterViewModel
 
-@Suppress("FunctionName")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavController) {
@@ -36,7 +37,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.c
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
-    var isChecked by remember { mutableStateOf(false) }
+    val isChecked = viewModel.isChecked.value
 
     Box(
         modifier = Modifier
@@ -126,7 +127,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.c
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    CustomCheckbox(checked = isChecked, onCheckedChange = { isChecked = it })
+                    CustomCheckbox(checked = isChecked, onCheckedChange = { viewModel.isChecked.value = it })
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Setuju dengan syarat dan ketentuan",
                         fontSize = 14.sp,
@@ -137,21 +138,12 @@ fun RegisterScreen(viewModel: RegisterViewModel = androidx.lifecycle.viewmodel.c
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = { viewModel.register() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Primary,
-                    disabledContainerColor = Disabled
-                ),
-                enabled = username.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty() && confirmPassword.isNotEmpty(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Daftar", color = Color.White, fontSize = 16.sp)
-            }
+            ToggleGreenButton(
+                text = "Daftar",
+                enabled = email.isNotEmpty() && password.isNotEmpty() && isChecked,
+                onClick = { viewModel.register() }
+            )
+
 
             Spacer(modifier = Modifier.height(32.dp))
 

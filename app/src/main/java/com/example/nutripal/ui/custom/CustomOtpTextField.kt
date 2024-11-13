@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.custom
 
 import androidx.compose.foundation.background
@@ -22,7 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@Suppress("FunctionName")
 @Composable
 fun CustomOtpTextField(
     value: String,

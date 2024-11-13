@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.foundation.Image
@@ -179,7 +181,6 @@ fun OtpScreen(
     }
 }
 
-@Suppress("FunctionName")
 @Preview(showBackground = true)
 @Composable
 fun PreviewOtpScreen() {

@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.foundation.BorderStroke
@@ -23,6 +25,7 @@ import com.example.nutripal.R
 import com.example.nutripal.ui.component.AuthHeaderImage
 import com.example.nutripal.ui.component.EmailField
 import com.example.nutripal.ui.component.PasswordField
+import com.example.nutripal.ui.component.ToggleGreenButton
 import com.example.nutripal.ui.custom.CustomCanvas
 import com.example.nutripal.ui.custom.CustomCheckbox
 import com.example.nutripal.ui.theme.Disabled
@@ -32,7 +35,6 @@ import com.example.nutripal.ui.theme.Secondary
 import com.example.nutripal.ui.theme.darkGray
 import com.example.nutripal.viewmodel.LoginViewModel
 
-@Suppress("FunctionName")
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavController) {
     var email by remember { mutableStateOf("") }
@@ -122,22 +124,11 @@ fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            Button(
-                onClick = { viewModel.login() },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Primary,
-                    disabledContainerColor = Disabled
-                ),
+            ToggleGreenButton(
+                text = "Masuk",
                 enabled = email.isNotEmpty() && password.isNotEmpty(),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Masuk", color = Color.White, fontSize = 16.sp)
-            }
-
+                onClick = { viewModel.login() }
+            )
             Spacer(modifier = Modifier.height(32.dp))
 
             HorizontalDivider(

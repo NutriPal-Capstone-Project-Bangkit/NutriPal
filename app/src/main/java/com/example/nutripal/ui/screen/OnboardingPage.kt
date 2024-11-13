@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.foundation.Image
@@ -25,7 +27,6 @@ import com.example.nutripal.data.model.PageData
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.viewmodel.OnboardingViewModel
 
-@Suppress("FunctionName")
 @Composable
 fun OnboardingPage(viewModel: OnboardingViewModel, pageData: PageData, pageIndex: Int) {
     val imageRes = when (pageIndex) {

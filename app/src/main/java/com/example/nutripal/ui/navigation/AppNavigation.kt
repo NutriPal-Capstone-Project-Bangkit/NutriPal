@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.navigation
 
 import androidx.compose.runtime.Composable

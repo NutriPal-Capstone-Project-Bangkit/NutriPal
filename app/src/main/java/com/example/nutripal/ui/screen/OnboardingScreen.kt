@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.foundation.background
@@ -17,7 +19,6 @@ import com.example.nutripal.ui.custom.CustomNextButton
 import com.example.nutripal.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
-@Suppress("FunctionName")
 @Composable
 fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { 3 })

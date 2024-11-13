@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.screen
 
 import androidx.compose.animation.core.animateFloatAsState
@@ -31,7 +33,7 @@ fun SplashScreen(
 
     val animatedAlpha by animateFloatAsState(
         targetValue = alpha,
-        animationSpec = tween(durationMillis = 1000)
+        animationSpec = tween(durationMillis = 1000), label = ""
     )
 
     LaunchedEffect(Unit) {
@@ -54,7 +56,6 @@ fun SplashScreen(
     }
 }
 
-@Suppress("FunctionName")
 @Preview(showBackground = true)
 @Composable
 fun SplashScreenPreview() {

@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.custom
 
 import androidx.compose.foundation.background
@@ -14,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
-@Suppress("FunctionName")
 @Composable
 fun CustomCheckbox(
     checked: Boolean,

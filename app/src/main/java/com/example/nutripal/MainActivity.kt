@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.navigation.NavController
 import com.example.nutripal.ui.theme.NutriPalTheme
 import com.example.nutripal.ui.navigation.AppNavigation
+import com.example.nutripal.ui.screen.PersonalDetailsScreen
 import com.example.nutripal.ui.screen.RegisterScreen
 
 class MainActivity : ComponentActivity() {

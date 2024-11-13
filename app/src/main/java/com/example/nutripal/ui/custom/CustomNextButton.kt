@@ -1,5 +1,6 @@
-package com.example.nutripal.ui.custom
+@file:Suppress("FunctionName")
 
+package com.example.nutripal.ui.custom
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,7 +41,6 @@ fun CustomNextButton(onClick: () -> Unit) {
     }
 }
 
-@Suppress("FunctionName")
 @Preview
 @Composable
 fun NextButtonPreview() {

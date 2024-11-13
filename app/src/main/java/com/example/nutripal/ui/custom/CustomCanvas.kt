@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.custom
 
 import androidx.compose.foundation.Canvas
@@ -12,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.Secondary
 
-@Suppress("FunctionName")
 @Composable
 fun CustomCanvas(
     modifier: Modifier = Modifier,

@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.example.nutripal.ui.component
 
 import androidx.compose.foundation.background
@@ -14,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.nutripal.ui.theme.Primary
 
-@Suppress("FunctionName")
 @Composable
 fun PageIndicator(
     currentPage: Int,
