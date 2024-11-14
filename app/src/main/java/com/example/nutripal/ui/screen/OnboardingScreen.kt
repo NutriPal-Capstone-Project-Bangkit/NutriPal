@@ -68,7 +68,6 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavControlle
     }
 }
 
-@Suppress("FunctionName")
 @Preview(showBackground = true)
 @Composable
 fun PreviewOnboardingScreen() {
