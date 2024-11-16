@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package com.example.nutripal.ui.screen
+package com.example.nutripal.ui.screen.onboarding
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,7 +24,6 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavControlle
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
-    // Collect current page state
     val currentPage by viewModel.currentPage.collectAsState()
 
     Column(
@@ -67,6 +66,8 @@ fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavControlle
         viewModel.updatePage(pagerState.currentPage)
     }
 }
+
+
 
 @Preview(showBackground = true)
 @Composable

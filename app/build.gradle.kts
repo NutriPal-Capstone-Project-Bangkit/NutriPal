@@ -1,10 +1,20 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     id ("kotlin-parcelize")
+    id("com.google.gms.google-services")
     id("com.google.dagger.hilt.android")
+}
+
+fun getLocalProperty(key: String): String? {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    localPropertiesFile.inputStream().use { properties.load(it) }
+    return properties.getProperty(key)
 }
 
 android {
@@ -19,6 +29,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${getLocalProperty("GOOGLE_CLIENT_ID")}\"")
     }
 
     buildTypes {
@@ -39,6 +51,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -53,6 +66,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.runtime.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation (libs.androidx.foundation)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -63,15 +78,29 @@ dependencies {
     implementation (libs.ui)
     implementation(libs.material.icons.extended)
 
-    kapt(libs.hilt.android.compiler)
+    implementation ("com.google.dagger:hilt-android:2.52")
+    kapt ("com.google.dagger:hilt-compiler:2.52")
+    implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(libs.androidx.navigation.compose)
-
-    implementation(libs.hilt.android.v244)
 
     implementation(libs.androidx.ui.v140)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    implementation(libs.androidx.hilt.navigation.compose)
-
     implementation(libs.coil.compose)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
+    implementation (libs.google.firebase.auth.ktx)
+    implementation (libs.firebase.core)
+    implementation (libs.kotlinx.coroutines.android)
+
+    implementation (libs.play.services.auth.v2000)
+
+    implementation (libs.androidx.material)
+
+}
+
+kapt {
+    correctErrorTypes = true
 }

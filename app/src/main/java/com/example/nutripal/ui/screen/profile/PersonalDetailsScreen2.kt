@@ -1,4 +1,4 @@
-package com.example.nutripal.ui.screen
+package com.example.nutripal.ui.screen.profile
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.R
 import com.example.nutripal.data.model.FrameData
@@ -22,11 +23,12 @@ import com.example.nutripal.ui.component.ToggleGreenButton
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.viewmodel.PersonalDetailsViewModel
 import com.example.nutripal.ui.custom.CustomFrame
+import com.example.nutripal.ui.navigation.Screen
 
 @Composable
 fun PersonalDetailsScreen2(
     viewModel: PersonalDetailsViewModel = viewModel(),
-    onImageClick: (String) -> Unit
+    navController: NavController
 ) {
     val selectedFrameId = remember { mutableStateOf(-1) }
     val isButtonEnabled = selectedFrameId.value != -1
@@ -93,15 +95,15 @@ fun PersonalDetailsScreen2(
         ToggleGreenButton(
             text = "Simpan",
             enabled = isButtonEnabled,
-            onClick = {}
+            onClick = { navController.navigate(Screen.Home.route) }
         )
+
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PersonalDetailsScreen2Preview() {
-    PersonalDetailsScreen2(viewModel = viewModel(), onImageClick = { clickedItem ->
-        println("$clickedItem gambar diklik")
-    })
+    val navController = rememberNavController()
+    PersonalDetailsScreen2(viewModel = viewModel(), navController)
 }

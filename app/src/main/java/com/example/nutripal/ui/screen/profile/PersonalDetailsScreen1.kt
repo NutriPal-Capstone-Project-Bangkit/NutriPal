@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName")
 
-package com.example.nutripal.ui.screen
+package com.example.nutripal.ui.screen.profile
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

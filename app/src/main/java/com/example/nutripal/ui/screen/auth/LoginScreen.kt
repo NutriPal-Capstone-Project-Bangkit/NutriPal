@@ -1,7 +1,11 @@
 @file:Suppress("FunctionName")
 
-package com.example.nutripal.ui.screen
+package com.example.nutripal.ui.screen.auth
 
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,18 +16,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.nutripal.R
 import com.example.nutripal.ui.component.AuthHeaderImage
 import com.example.nutripal.ui.component.EmailField
+import com.example.nutripal.ui.component.GoogleSignInButton
 import com.example.nutripal.ui.component.PasswordField
 import com.example.nutripal.ui.component.ToggleGreenButton
 import com.example.nutripal.ui.custom.CustomCanvas
@@ -34,12 +43,37 @@ import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.Secondary
 import com.example.nutripal.ui.theme.darkGray
 import com.example.nutripal.viewmodel.LoginViewModel
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), navController: NavController) {
+fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavController) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isChecked by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    // Initialize Google Sign In on first composition
+    LaunchedEffect(Unit) {
+        viewModel.initializeGoogleSignIn(context)
+    }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { result ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                account.idToken?.let {
+                    viewModel.googleSignIn(it, navController)
+                }
+            } catch (e: ApiException) {
+                Toast.makeText(context, "Google Sign-In gagal: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
 
     Box(
         modifier = Modifier
@@ -93,11 +127,18 @@ fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose
         ) {
             Spacer(modifier = Modifier.height(24.dp))
 
-            EmailField(email = email, onValueChange = { email = it })
+            EmailField(
+                email = viewModel.email.value,
+                onValueChange = { viewModel.updateEmail(it) }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            PasswordField(password = password, label = "Masukkan Password", onValueChange = { password = it })
+            PasswordField(
+                password = viewModel.password.value,
+                label = "Masukkan Password",
+                onValueChange = { viewModel.updatePassword(it) }
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -126,9 +167,12 @@ fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose
 
             ToggleGreenButton(
                 text = "Masuk",
-                enabled = email.isNotEmpty() && password.isNotEmpty(),
-                onClick = { viewModel.login() }
+                enabled = viewModel.isLoginEnabled,
+                onClick = {
+                    viewModel.login(navController)
+                }
             )
+
             Spacer(modifier = Modifier.height(32.dp))
 
             HorizontalDivider(
@@ -141,24 +185,13 @@ fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            OutlinedButton(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .height(48.dp),
-                border = BorderStroke(0.75.dp, Color.Gray),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_google),
-                    contentDescription = "Masuk dengan Google",
-                    tint = Color.Unspecified
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Masuk dengan Google", fontSize = 16.sp)
-            }
-
+            GoogleSignInButton(
+                onClick = {
+                    viewModel.getGoogleSignInIntent()?.let { signInIntent ->
+                        launcher.launch(signInIntent)
+                    }
+                }
+            )
             Spacer(modifier = Modifier.height(32.dp))
         }
 
@@ -190,5 +223,9 @@ fun LoginScreen(viewModel: LoginViewModel = androidx.lifecycle.viewmodel.compose
                 .height(150.dp)
                 .align(Alignment.BottomCenter)
         )
+    }
+    val errorMessage by viewModel.errorMessage
+    if (errorMessage.isNotEmpty()) {
+        Toast.makeText(LocalContext.current, errorMessage, Toast.LENGTH_LONG).show()
     }
 }

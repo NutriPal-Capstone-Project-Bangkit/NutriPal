@@ -1,4 +1,4 @@
-package com.example.nutripal.ui.screen
+package com.example.nutripal.ui.screen.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*

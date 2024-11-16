@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1006183382175",
+    "project_id": "nutripal-4bd4e",
+    "storage_bucket": "nutripal-4bd4e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006183382175:android:08c3e1da06fb2e8e0eb6aa",
+        "android_client_info": {
+          "package_name": "com.example.nutripal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006183382175-s30jhqi30r71rhpg0ppr3t68hvs7s084.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.nutripal",
+            "certificate_hash": "ab64a58f63caad7bbc72cc924d6604765250efe8"
+          }
+        },
+        {
+          "client_id": "1006183382175-0a1utn4g8us3uqcksqkpo0usi1e2an6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA1WoNb7qwajCUjSFO2JvAAPafgsPJRLDE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006183382175-0a1utn4g8us3uqcksqkpo0usi1e2an6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
