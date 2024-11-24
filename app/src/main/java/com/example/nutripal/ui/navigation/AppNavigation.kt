@@ -1,45 +1,36 @@
 package com.example.nutripal.ui.navigation
 
+import android.util.Base64
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.nutripal.data.repository.AuthRepository
-import com.example.nutripal.ui.screen.HomeScreen
+import androidx.navigation.navArgument
+import com.example.nutripal.ui.screen.home.ChatScreen
+import com.example.nutripal.ui.screen.home.HomeScreen
 import com.example.nutripal.ui.screen.SplashScreen
 import com.example.nutripal.ui.screen.auth.LoginScreen
 import com.example.nutripal.ui.screen.auth.RegisterScreen
 import com.example.nutripal.ui.screen.auth.VerificationScreen
+import com.example.nutripal.ui.screen.home.NewsDetailScreen
 import com.example.nutripal.ui.screen.onboarding.OnboardingScreen
-import com.example.nutripal.ui.screen.profile.PersonalDetailsScreen1
-import com.example.nutripal.ui.screen.profile.PersonalDetailsScreen2
+import com.example.nutripal.ui.screen.personaldetails.PersonalDetailsScreen1
+import com.example.nutripal.ui.screen.personaldetails.PersonalDetailsScreen2
+import com.example.nutripal.viewmodel.DetailNewsViewModel
 import com.example.nutripal.viewmodel.LoginViewModel
 import com.example.nutripal.viewmodel.OnboardingViewModel
 import com.example.nutripal.viewmodel.PersonalDetailsViewModel
 import com.example.nutripal.viewmodel.RegisterViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.firebase.auth.FirebaseAuth
-
-// Define routes as sealed class for type safety
-sealed class Screen(val route: String) {
-    object Splash : Screen("splash")
-    object Onboarding : Screen("onboarding")
-    object Login : Screen("login")
-    object Register : Screen("register")
-    object PersonalDetails1 : Screen("personal_details_1")
-    object PersonalDetails2 : Screen("personal_details_screen_2")
-    object EmailVerification : Screen("email_verification")
-    object Home : Screen("home")
-}
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val authRepository = AuthRepository(FirebaseAuth.getInstance())
 
     NavHost(
         navController = navController,
@@ -85,7 +76,21 @@ fun AppNavigation() {
             )
         }
         composable(Screen.Home.route) {
-            HomeScreen()
-    }
+            HomeScreen(navController)
+        }
+        composable(Screen.Chatbot.route) {
+            ChatScreen(viewModel(), navController)
+        }
+        composable(
+            route = "news_detail/{encodedUrl}", 
+            arguments = listOf(
+                navArgument("encodedUrl") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val viewModel: DetailNewsViewModel = hiltViewModel()
+            NewsDetailScreen(navController = navController)
+        }
     }
 }

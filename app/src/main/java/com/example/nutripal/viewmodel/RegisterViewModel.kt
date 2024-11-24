@@ -19,7 +19,8 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
     var isRegisterSuccess = mutableStateOf(false)
     var errorMessage = mutableStateOf("")
     var isEmailVerified = mutableStateOf(false)
-    private var isChecked = mutableStateOf(false)
+    var showVerificationDialog = mutableStateOf(false)
+
 
     // Add loading state
     private val _isLoading = MutableStateFlow(false)
@@ -57,13 +58,6 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
         }
     }
 
-    // Add function to reset states
-    fun resetStates() {
-        errorMessage.value = ""
-        isRegisterSuccess.value = false
-        isEmailVerified.value = false
-    }
-
     fun resendVerificationEmail() {
         viewModelScope.launch {
             try {
@@ -82,31 +76,17 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
         }
     }
 
-    fun checkEmailVerification(navController: NavController) {
+
+    fun checkEmailVerification() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
                 val user = FirebaseAuth.getInstance().currentUser
-                user?.reload()?.await()  // Reload user data to get the most updated status
+                user?.reload()?.await()
                 isEmailVerified.value = user?.isEmailVerified == true
 
-                // Periksa apakah email sudah terverifikasi dan pastikan tidak ada navigasi berulang
                 if (isEmailVerified.value) {
-                    // Cek apakah kita sudah berada di layar Login, jika belum navigasi ke Login
-                    if (navController.currentBackStackEntry?.destination?.route != Screen.Login.route) {
-                        navController.navigate(Screen.Login.route) {
-                            // Pop semua layar sebelumnya hingga ke Register dan pastikan hanya Login yang tetap ada
-                            popUpTo(Screen.Register.route) { inclusive = true }
-                        }
-                    }
-                } else {
-                    // Jika email belum terverifikasi, pastikan kita menuju ke EmailVerification screen
-                    if (navController.currentBackStackEntry?.destination?.route != Screen.EmailVerification.route) {
-                        navController.navigate(Screen.EmailVerification.route) {
-                            // Pop semua layar sebelumnya hingga ke Register dan pastikan hanya EmailVerification yang tetap ada
-                            popUpTo(Screen.Register.route) { inclusive = true }
-                        }
-                    }
+                    showVerificationDialog.value = true
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Failed to check email verification status: ${e.message}"
@@ -114,10 +94,5 @@ class RegisterViewModel @Inject constructor(private val authRepository: AuthRepo
                 _isLoading.value = false
             }
         }
-    }
-
-
-    fun updateCheckboxState(isChecked: Boolean) {
-        this.isChecked.value = isChecked
     }
 }

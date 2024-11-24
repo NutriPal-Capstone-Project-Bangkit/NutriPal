@@ -14,13 +14,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.PageIndicator
-import com.example.nutripal.ui.custom.CustomNextButton
+import com.example.nutripal.ui.custom.onboarding.CustomNextButton
 import com.example.nutripal.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavController) {
+
+    MainStatusBar()
+
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 

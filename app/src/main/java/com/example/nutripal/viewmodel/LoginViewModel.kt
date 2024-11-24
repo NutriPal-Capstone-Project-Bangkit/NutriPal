@@ -65,7 +65,6 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
                 val result = authRepository.loginUser(email.value, password.value)
                 result.fold(
                     onSuccess = {
-                        // Navigasi tanpa pop-up atau stack modifikasi
                         navController.navigate(Screen.PersonalDetails1.route)
                     },
                     onFailure = { e ->
@@ -79,24 +78,24 @@ class LoginViewModel @Inject constructor(private val authRepository: AuthReposit
             }
         }
     }
+
     fun googleSignIn(idToken: String, navController: NavController) {
         viewModelScope.launch {
             try {
-                isLoading.value = true
+                _isLoading.value = true
                 val result = authRepository.googleSignIn(idToken)
                 result.fold(
                     onSuccess = {
-                        // Jika sign-in berhasil, arahkan ke PersonalDetailsScreen1
                         navController.navigate(Screen.PersonalDetails1.route)
                     },
-                    onFailure = {
-                        errorMessage.value = it.message ?: "Gagal masuk dengan Google"
+                    onFailure = { e ->
+                        errorMessage.value = e.message ?: "Google Sign-In gagal"
                     }
                 )
             } catch (e: Exception) {
                 errorMessage.value = "Terjadi kesalahan: ${e.message}"
             } finally {
-                isLoading.value = false
+                _isLoading.value = false
             }
         }
     }

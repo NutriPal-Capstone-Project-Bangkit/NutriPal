@@ -3,7 +3,6 @@
 package com.example.nutripal.ui.screen.auth
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,24 +21,28 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.example.nutripal.ui.component.AuthHeaderImage
-import com.example.nutripal.ui.component.EmailField
+import com.example.nutripal.ui.component.auth.AuthHeaderImage
+import com.example.nutripal.ui.component.auth.EmailField
 import com.example.nutripal.ui.component.LoadingAnimation
-import com.example.nutripal.ui.component.PasswordField
-import com.example.nutripal.ui.component.StatusDialog
-import com.example.nutripal.ui.component.ToggleGreenButton
-import com.example.nutripal.ui.custom.CustomCanvas
-import com.example.nutripal.ui.custom.CustomCheckbox
+import com.example.nutripal.ui.component.MainStatusBar
+import com.example.nutripal.ui.component.auth.PasswordField
+import com.example.nutripal.ui.component.auth.regist.StatusDialog
+import com.example.nutripal.ui.component.auth.ToggleGreenButton
+import com.example.nutripal.ui.component.auth.CustomCanvas
+import com.example.nutripal.ui.component.auth.CustomCheckbox
+import com.example.nutripal.ui.component.auth.regist.UsernameField
 import com.example.nutripal.ui.navigation.Screen
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.darkGray
 import com.example.nutripal.viewmodel.RegisterViewModel
-import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreen(navController: NavController, context: Context) {
+
+    MainStatusBar()
+
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -51,15 +54,6 @@ fun RegisterScreen(navController: NavController, context: Context) {
     val viewModel: RegisterViewModel = hiltViewModel()
 
     val isLoading by viewModel.isLoading.collectAsState()
-
-    fun resetStates() {
-        showDialog = false
-        viewModel.errorMessage.value = ""  // Reset error message
-        viewModel.isRegisterSuccess.value = false  // Reset success state
-        if (isSuccess) {
-            navController.navigate("email_verification")
-        }
-    }
 
     if (showDialog) {
         StatusDialog(
@@ -130,21 +124,12 @@ fun RegisterScreen(navController: NavController, context: Context) {
             ) {
                 Spacer(modifier = Modifier.height(72.dp))
 
-                TextField(
+                UsernameField(
                     value = username,
-                    onValueChange = { username = it },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    placeholder = { Text("Masukkan Username", fontFamily = NunitoFontFamily, fontWeight = FontWeight.Medium) },
-                    colors = TextFieldDefaults.textFieldColors(
-                        containerColor = Color(0xFFEFEFEF),
-                        focusedTextColor = Color(0xFF2A2A2A),
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                    enabled = !isLoading
+                    onValueChange = { username = it},
+                    placeholderText = "Masukkan Username",
+                    isLoading = isLoading,
+                    onNextFocus = {}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

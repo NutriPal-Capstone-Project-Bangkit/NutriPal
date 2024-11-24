@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.nutripal.R
-import com.example.nutripal.ui.component.ToggleGreenButton
+import com.example.nutripal.ui.component.MainStatusBar
+import com.example.nutripal.ui.component.auth.regist.StatusDialog
+import com.example.nutripal.ui.component.auth.ToggleGreenButton
 import com.example.nutripal.ui.navigation.Screen
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.Primary
@@ -47,16 +49,14 @@ fun VerificationScreen(
     val isEmailVerified by viewModel.isEmailVerified
     var remainingTime by remember { mutableStateOf(60) }
     var canResend by remember { mutableStateOf(false) }
+    val showVerificationDialog by viewModel.showVerificationDialog
 
-    // Polling untuk memeriksa status verifikasi email
+    MainStatusBar()
+
     LaunchedEffect(Unit) {
         while (!isEmailVerified) {
-            viewModel.checkEmailVerification(navController)
-            delay(2000)  // Cek status verifikasi setiap 2 detik
-        }
-        // Arahkan ke login setelah verifikasi selesai
-        navController.navigate(Screen.Login.route) {
-            popUpTo(Screen.EmailVerification.route) { inclusive = true }
+            viewModel.checkEmailVerification()
+            delay(2000)
         }
     }
 
@@ -67,6 +67,16 @@ fun VerificationScreen(
             if (remainingTime == 0) canResend = true
         }
     }
+
+    StatusDialog(
+        showDialog = showVerificationDialog,
+        isSuccess = true,
+        message = "Email berhasil terverifikasi.Yuk, login sekarang!",
+        onDismiss = {
+            viewModel.showVerificationDialog.value = false
+            onNavigateToLogin()
+        }
+    )
 
     // UI untuk tampilan verifikasi
     Column(

@@ -43,7 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nutripal.R
-import com.example.nutripal.ui.custom.CustomOtpTextField
+import com.example.nutripal.ui.custom.otp.CustomOtpTextField
 import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.darkGray
 

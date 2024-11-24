@@ -10,6 +10,7 @@ val Primary = Color(0xFF52CC52)
 val Secondary = Color(0xFFE56845)
 val Disabled = Color(0xFFCACACA)
 val darkGray = Color(0xFF2A2A2A)
+val botFrameColor = Color(0xFF52CC52)
 
 val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)

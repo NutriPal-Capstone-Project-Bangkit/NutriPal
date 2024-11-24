@@ -30,7 +30,18 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "GOOGLE_CLIENT_ID", "\"${getLocalProperty("GOOGLE_CLIENT_ID")}\"")
+        val buildConfigFields = mapOf(
+            "GOOGLE_CLIENT_ID" to getLocalProperty("GOOGLE_CLIENT_ID"),
+            "GEMINI_BASE_URL" to getLocalProperty("GEMINI_BASE_URL"),
+            "GEMINI_API_KEY" to getLocalProperty("GEMINI_API_KEY"),
+            "NEWS_BASE_URL" to getLocalProperty("NEWS_BASE_URL"),
+            "NEWS_API_KEY" to getLocalProperty("NEWS_API_KEY")
+        )
+
+        buildConfigFields.forEach { (key, value) ->
+            buildConfigField("String", key, "\"$value\"")
+        }
+
     }
 
     buildTypes {
@@ -78,6 +89,7 @@ dependencies {
     implementation (libs.ui)
     implementation(libs.material.icons.extended)
 
+    //injection
     implementation ("com.google.dagger:hilt-android:2.52")
     kapt ("com.google.dagger:hilt-compiler:2.52")
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -88,17 +100,25 @@ dependencies {
 
     implementation(libs.coil.compose)
 
+    //auth
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
-
     implementation (libs.google.firebase.auth.ktx)
     implementation (libs.firebase.core)
     implementation (libs.kotlinx.coroutines.android)
-
     implementation (libs.play.services.auth.v2000)
 
     implementation (libs.androidx.material)
 
+    //ocr
+    implementation (libs.text.recognition)
+
+    //status bar
+    implementation (libs.google.accompanist.systemuicontroller)
+
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
 }
 
 kapt {
