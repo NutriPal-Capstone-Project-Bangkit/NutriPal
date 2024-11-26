@@ -63,6 +63,7 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+        mlModelBinding = true
     }
 }
 
@@ -79,6 +80,10 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation (libs.androidx.foundation)
+    implementation(libs.tensorflow.lite.support)
+    implementation(libs.tensorflow.lite.metadata)
+    implementation(libs.play.services.auth.v2000)
+    implementation(libs.play.services.auth.v2000)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -119,6 +124,8 @@ dependencies {
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
+
+    implementation (libs.androidx.core.splashscreen)
 }
 
 kapt {

@@ -34,6 +34,7 @@ fun HomeScreen(navController: NavController) {
     val newsList by homeViewModel.newsList
     val isLoading by homeViewModel.isLoading
     val errorMessage by homeViewModel.errorMessage
+    var currentRoute by remember { mutableStateOf("home") }
 
     LaunchedEffect(Unit) {
         homeViewModel.loadNews()
@@ -93,6 +94,8 @@ fun HomeScreen(navController: NavController) {
 
         // Bottom navigation
         HomeBottomNavigation(
+            currentRoute = currentRoute,
+            navController = navController,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .zIndex(1f)

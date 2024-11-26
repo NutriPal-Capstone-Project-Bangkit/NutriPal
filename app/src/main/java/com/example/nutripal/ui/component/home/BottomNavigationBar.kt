@@ -12,7 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
-import com.example.nutripal.ui.theme.Disabled
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.ui.theme.Primary
 
 sealed class BottomNavItem(val title: String, val icon: @Composable () -> Unit, val route: String) {
@@ -21,8 +22,7 @@ sealed class BottomNavItem(val title: String, val icon: @Composable () -> Unit, 
 }
 
 @Composable
-fun BottomNavigationBar(modifier: Modifier = Modifier) {
-    var selectedItem by remember { mutableStateOf(0) }
+fun BottomNavigationBar(modifier: Modifier = Modifier, currentRoute: String, navController: NavController) {
     val items = listOf(
         BottomNavItem.Home,
         BottomNavItem.Profile
@@ -40,37 +40,31 @@ fun BottomNavigationBar(modifier: Modifier = Modifier) {
             containerColor = Color.White,
             tonalElevation = 0.dp
         ) {
-            // Add a Spacer between Home and Profile to ensure equal space
             items.forEachIndexed { index, item ->
                 NavigationBarItem(
-                    icon = {
-                        item.icon()
+                    icon = { item.icon() },
+                    label = { Text(item.title) },
+                    selected = currentRoute == item.route,
+                    onClick = {
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     },
-                    label = {
-                        Text(
-                            text = item.title,
-                            fontSize = 12.sp
-                        )
-                    },
-                    selected = selectedItem == index,
-                    onClick = { selectedItem = index },
                     modifier = Modifier
-                        .width(140.dp) // Set width for each icon
-                        .weight(1f), // Make it take equal space
+                        .width(140.dp)
+                        .weight(1f),
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Primary,
+                        selectedIconColor = Primary,  // Assuming Primary is Blue
                         selectedTextColor = Primary,
-                        unselectedIconColor = Disabled,
-                        unselectedTextColor = Disabled
+                        unselectedIconColor = Color.Gray, // Assuming Disabled is Gray
+                        unselectedTextColor = Color.Gray
                     )
                 )
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun BottomNavigationBarPreview() {
-    BottomNavigationBar()
 }

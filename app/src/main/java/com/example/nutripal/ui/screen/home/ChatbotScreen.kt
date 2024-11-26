@@ -53,12 +53,14 @@ fun ChatScreen(viewModel: ChatViewModel = viewModel(), navController: NavControl
             },
             backgroundColor = Color.White,
             navigationIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = "Back",
-                    tint = Color.Black,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_back),
+                        contentDescription = "Back",
+                        tint = Color.Black,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                }
             }
         )
 

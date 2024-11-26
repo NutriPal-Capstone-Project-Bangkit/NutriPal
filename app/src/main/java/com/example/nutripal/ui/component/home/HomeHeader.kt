@@ -36,13 +36,17 @@ fun HomeHeader() {
             text = "Hola 👋",
             color = Color.White,
             fontSize = 16.sp,
+            fontFamily = NunitoFontFamily,
+            fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(top = 16.dp)
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = "Yuk, cek asupan harianmu!",
             color = Color.White,
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            fontFamily = NunitoFontFamily,
+            fontWeight = FontWeight.SemiBold
         )
     }
 }
@@ -58,7 +62,6 @@ fun DailyNutritionCard() {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Teks dan ikon dalam satu baris
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Daily Nutritions",
@@ -66,7 +69,7 @@ fun DailyNutritionCard() {
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
-                Spacer(modifier = Modifier.width(160.dp))
+                Spacer(modifier = Modifier.width(180.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_continue),
                     contentDescription = "Continue Icon",

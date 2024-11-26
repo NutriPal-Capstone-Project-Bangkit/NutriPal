@@ -24,7 +24,7 @@ fun UsernameField(
     onValueChange: (String) -> Unit,
     placeholderText: String,
     isLoading: Boolean = false,
-    onNextFocus: () -> Unit // Fungsi untuk berpindah ke field berikutnya
+    onNextFocus: () -> Unit
 ) {
     TextField(
         value = value,

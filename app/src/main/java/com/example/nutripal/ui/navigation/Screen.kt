@@ -20,4 +20,6 @@ sealed class Screen(val route: String) {
             return "news_detail/$encodedUrl"
         }
     }
+    data object Profile : Screen("profile")
+    data object EditProfile : Screen("edit_profile")
 }

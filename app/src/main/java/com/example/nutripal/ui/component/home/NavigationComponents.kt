@@ -16,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.example.nutripal.R
 import com.example.nutripal.util.LaunchCamera
 
@@ -89,7 +90,11 @@ fun ScannerButton(
 }
 
 @Composable
-fun HomeBottomNavigation(modifier: Modifier = Modifier) {
+fun HomeBottomNavigation(
+    modifier: Modifier = Modifier,
+    currentRoute: String,
+    navController: NavController
+) {
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = Color.White,
@@ -101,7 +106,9 @@ fun HomeBottomNavigation(modifier: Modifier = Modifier) {
                 .padding(bottom = 0.dp, top = 16.dp)
         ) {
             BottomNavigationBar(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                currentRoute = currentRoute,
+                navController = navController
             )
         }
     }
