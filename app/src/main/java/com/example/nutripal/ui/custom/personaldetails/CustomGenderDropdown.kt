@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.nutripal.ui.theme.Disabled
@@ -38,7 +39,7 @@ fun CustomGenderDropdown(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column {
+    Column (){
         Text(
             "Jenis Kelamin",
             style = TextStyle(
@@ -87,12 +88,11 @@ fun CustomGenderDropdown(
                     focusedLabelColor = Primary,
                     containerColor = Color.Transparent
                 ),
-                // Apply the same TextStyle to the selected value in the TextField
                 textStyle = TextStyle(
                     fontFamily = NunitoFontFamily,
                     fontWeight = FontWeight.Normal,
                     fontSize = 16.sp,
-                    color = Color(0xFF2A2A2A) // Ensure the text color is dark enough for readability
+                    color = Color(0xFF2A2A2A)
                 )
             )
 

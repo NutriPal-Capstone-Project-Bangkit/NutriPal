@@ -30,8 +30,7 @@ fun UsernameField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .fillMaxWidth(),
         placeholder = {
             Text(
                 text = placeholderText,

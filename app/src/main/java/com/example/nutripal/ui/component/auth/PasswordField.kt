@@ -4,6 +4,7 @@ package com.example.nutripal.ui.component.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -29,8 +30,7 @@ fun PasswordField(
     var passwordVisible by remember { mutableStateOf(false) }
     var isPasswordValid by remember { mutableStateOf(true) }
 
-    // Check if the password is valid (at least 6 characters)
-    val passwordErrorMessage = if (password.length < 6) "Password must be at least 6 characters" else ""
+    val passwordErrorMessage = if (password.length < 6) "Password harus setidaknya 6 karakter" else ""
 
     Column(
         modifier = Modifier.fillMaxWidth()
@@ -41,11 +41,10 @@ fun PasswordField(
                 if (it.length <= 16) {
                     onValueChange(it)
                 }
-                isPasswordValid = it.length >= 6 // Validate password length
+                isPasswordValid = it.length >= 6
             },
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .fillMaxWidth(),
             placeholder = { Text("Masukkan passwordmu", fontFamily = NunitoFontFamily) },
             trailingIcon = {
                 Icon(
@@ -60,6 +59,7 @@ fun PasswordField(
                     Text(text = label, fontFamily = NunitoFontFamily)
                 }
             },
+            shape = RoundedCornerShape(12.dp),
             colors = TextFieldDefaults.textFieldColors(
                 containerColor = Color(0xFFEFEFEF),
                 focusedTextColor = Color(0xFF2A2A2A),
@@ -72,18 +72,17 @@ fun PasswordField(
             keyboardActions = KeyboardActions(
                 onDone = {  }
             ),
-            isError = !isPasswordValid // Highlight error state if password is invalid
+            isError = !isPasswordValid
         )
 
-        // Show error message if password is invalid
         if (!isPasswordValid && passwordErrorMessage.isNotEmpty()) {
             Text(
                 text = passwordErrorMessage,
                 color = Color.Red,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 4.dp) // Adjusting padding for better alignment
-                    .align(Alignment.Start) // Align the error message to the start
+                    .padding(start = 16.dp, top = 4.dp)
+                    .align(Alignment.Start)
             )
         }
     }

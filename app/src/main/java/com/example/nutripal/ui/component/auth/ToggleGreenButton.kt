@@ -28,7 +28,6 @@ fun ToggleGreenButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .height(48.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Primary,

@@ -34,14 +34,18 @@
     import androidx.compose.material3.MaterialTheme
     import androidx.compose.material3.Text
     import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.LaunchedEffect
+    import androidx.compose.runtime.collectAsState
     import androidx.compose.runtime.getValue
     import androidx.compose.runtime.mutableStateOf
     import androidx.compose.runtime.remember
+    import androidx.compose.runtime.setValue
     import androidx.compose.ui.Alignment
     import androidx.compose.ui.Modifier
     import androidx.compose.ui.draw.clip
     import androidx.compose.ui.graphics.Color
     import androidx.compose.ui.graphics.vector.ImageVector
+    import androidx.compose.ui.layout.ContentScale
     import androidx.compose.ui.platform.LocalContext
     import androidx.compose.ui.res.painterResource
     import androidx.compose.ui.text.font.FontWeight
@@ -51,6 +55,7 @@
     import androidx.compose.ui.zIndex
     import androidx.navigation.NavController
     import androidx.navigation.compose.rememberNavController
+    import coil.compose.AsyncImage
     import com.example.nutripal.R
     import com.example.nutripal.ui.component.home.HomeBottomNavigation
     import com.example.nutripal.ui.component.home.HomeStatusBar
@@ -64,9 +69,25 @@
 
     @Composable
     fun ProfileScreen(navController: NavController, @ApplicationContext context: Context) {
+
+        val viewModel = remember { ProfileViewModel() }
+        val profileState by viewModel.profileState.collectAsState()
+        var profilePictureUrl by remember { mutableStateOf<String?>(null) }
+        val auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
+        LaunchedEffect(Unit) {
+            viewModel.fetchCurrentUserProfile()
+        }
+
+        LaunchedEffect(profileState) {
+            profileState?.profilePicture?.let {
+                profilePictureUrl = it
+            }
+        }
+
         val red = Color(0xFFE53935)
         val currentRoute by remember { mutableStateOf("profile") }
-        val auth = FirebaseAuth.getInstance()
 
         HomeStatusBar()
 
@@ -90,14 +111,12 @@
                 // Header text
                 ProfileHeader()
 
-                // Profile Section with floating image
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 30.dp)
                         .clip(RoundedCornerShape(12.dp))
-
                 ) {
                     // Floating profile image
                     Box(
@@ -105,17 +124,28 @@
                             .size(128.dp)
                             .clip(CircleShape)
                             .background(Color.White)
-                    )
+                    ) {
+                        AsyncImage(
+                            model = profileState?.profilePicture ?: R.drawable.default_profile_pic,
+                            contentDescription = "Profile Picture",
+                            placeholder = painterResource(id = R.drawable.default_profile_pic),
+                            error = painterResource(id = R.drawable.default_profile_pic),
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(CircleShape)
+                        )
+                    }
 
                     // Profile info
                     Text(
-                        text = "Bangkit People",
+                        text = profileState?.name ?: "Loading...",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(top = 12.dp)
                     )
                     Text(
-                        text = "m375232@gmail.com",
+                        text = currentUser?.email ?: "No email",
                         fontSize = 14.sp,
                         color = Color.Gray,
                         modifier = Modifier.padding(top = 4.dp)
@@ -128,25 +158,25 @@
                 MenuListItem(
                     icon = Icons.Default.History,
                     title = "Riwayat Scan",
-                    onClick = { navController.navigate("edit_profile") }
+                    onClick = { navController.navigate("history_scan")}
                 )
 
                 MenuListItem(
                     icon = Icons.Default.Edit,
                     title = "Edit Profile",
-                    onClick = { /* Handle click */ }
+                    onClick = { navController.navigate("edit_profile") }
                 )
 
                 MenuListItem(
                     icon = Icons.Default.Person,
                     title = "Pengaturan Akun",
-                    onClick = { /* Handle click */ }
+                    onClick = { navController.navigate("settings") }
                 )
 
                 MenuListItem(
                     icon = Icons.Default.Info,
                     title = "Tentang Aplikasi",
-                    onClick = { /* Handle click */ }
+                    onClick = { navController.navigate(Screen.AboutApp.route) }
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -154,16 +184,13 @@
                 // Logout button
                 Button(
                     onClick = {
-                        // Firebase sign-out
                         auth.signOut()
 
-                        // Clear login data from SharedPreferences
                         val sharedPreferences = context.getSharedPreferences("login_prefs", Context.MODE_PRIVATE)
                         sharedPreferences.edit().clear().apply()
 
-                        // Navigasi ke halaman login dan hapus semua back stack
                         navController.navigate(Screen.Login.route) {
-                            popUpTo(0) // Menghapus semua back stack
+                            popUpTo(0)
                         }
                     },
                     modifier = Modifier
@@ -193,7 +220,8 @@
                     .align(Alignment.BottomCenter)
                     .offset(y = 15.dp)
                     .zIndex(2f),
-                onScanResult = { /* Handle scan result */ }
+                navController = navController,
+                context = LocalContext.current,
             )
 
             // Bottom navigation
@@ -260,6 +288,8 @@
     @Composable
     fun HomeScreenPreview(){
         val navController = rememberNavController()
-    val context = LocalContext.current
-    ProfileScreen(navController, context)
+        val context = LocalContext.current
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val uid = currentUser?.uid ?: ""
+        ProfileScreen(navController, context)
     }

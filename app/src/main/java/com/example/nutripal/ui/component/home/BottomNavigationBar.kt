@@ -31,7 +31,7 @@ fun BottomNavigationBar(modifier: Modifier = Modifier, currentRoute: String, nav
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp) // Reduced height for the navigation bar
+            .height(60.dp)
     ) {
         NavigationBar(
             modifier = Modifier

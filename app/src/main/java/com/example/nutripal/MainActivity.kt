@@ -3,9 +3,13 @@ package com.example.nutripal
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.ui.navigation.AppNavigation
-import com.example.nutripal.ui.screen.home.HomeScreen
 import com.example.nutripal.ui.theme.NutriPalTheme
 import com.google.firebase.FirebaseApp
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,8 +22,9 @@ class MainActivity : ComponentActivity() {
         FirebaseApp.initializeApp(applicationContext)
 
         setContent {
+            val navController = rememberNavController()
+
             NutriPalTheme {
-                val navController = rememberNavController()
                 AppNavigation()
             }
         }

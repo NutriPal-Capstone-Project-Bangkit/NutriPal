@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import com.example.nutripal.R
 import com.example.nutripal.data.model.PageData
 import com.example.nutripal.ui.theme.NunitoFontFamily
-import com.example.nutripal.viewmodel.OnboardingViewModel
 
 @Composable
 fun OnboardingPage(viewModel: OnboardingViewModel, pageData: PageData, pageIndex: Int) {

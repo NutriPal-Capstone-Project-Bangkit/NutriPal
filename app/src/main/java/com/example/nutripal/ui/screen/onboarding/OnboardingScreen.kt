@@ -20,20 +20,16 @@ import com.example.nutripal.data.preferences.OnboardingPreferences
 import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.PageIndicator
 import com.example.nutripal.ui.custom.onboarding.CustomNextButton
-import com.example.nutripal.viewmodel.OnboardingViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingScreen(viewModel: OnboardingViewModel, navController: NavController, context: Context) {
 
-    // Initialize OnboardingPreferences
     val onboardingPreferences = OnboardingPreferences(context)
 
-    // Perform the check only once when the screen is launched
     LaunchedEffect(Unit) {
         if (onboardingPreferences.isOnboardingCompleted()) {
             navController.navigate("login") {
-                // Prevent navigating back to onboarding screen after login
                 popUpTo("onboarding") { inclusive = true }
             }
         }

@@ -1,78 +1,73 @@
 package com.example.nutripal.ui.component.home
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.example.nutripal.R
-import com.example.nutripal.util.LaunchCamera
 
 @Composable
 fun ScannerButton(
     modifier: Modifier = Modifier,
-    onScanResult: (String) -> Unit
+    navController: NavController,
+    context: Context
 ) {
-    val context = LocalContext.current
     val cameraPermission = Manifest.permission.CAMERA
-
-    // Check camera permission
-    val permissionGranted = remember {
-        ContextCompat.checkSelfPermission(
-            context,
-            cameraPermission
-        ) == PackageManager.PERMISSION_GRANTED
+    var permissionGranted by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context, cameraPermission
+            ) == PackageManager.PERMISSION_GRANTED
+        )
     }
 
-    // Camera launcher
-    val cameraLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview(),
-        onResult = { bitmap ->
-            if (bitmap != null) {
-                LaunchCamera().processImage(bitmap) { result ->
-                    println("Recognized text: $result")
-                    onScanResult(result)
-                }
-            } else {
-                onScanResult("Gambar tidak ditemukan.")
-            }
-        }
-    )
-
-    // Permission launcher
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
+            permissionGranted = isGranted
             if (isGranted) {
-                cameraLauncher.launch()
+                navController.navigate("camera_screen")
             } else {
-                onScanResult("Izin kamera diperlukan.")
+                Toast.makeText(
+                    context,
+                    "Camera permission is required to scan items",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     )
 
     Box(
-        modifier = modifier.size(150.dp)
+        modifier = modifier.size(150.dp),
+        contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
                 .size(80.dp)
-                .align(Alignment.Center)
                 .clickable {
                     if (permissionGranted) {
-                        cameraLauncher.launch()
+                        navController.navigate("camera_screen")
                     } else {
                         permissionLauncher.launch(cameraPermission)
                     }
@@ -82,9 +77,7 @@ fun ScannerButton(
             painter = painterResource(id = R.drawable.ic_scanner),
             contentDescription = "Scanner",
             tint = Color.Unspecified,
-            modifier = Modifier
-                .size(150.dp)
-                .align(Alignment.Center)
+            modifier = Modifier.size(150.dp)
         )
     }
 }

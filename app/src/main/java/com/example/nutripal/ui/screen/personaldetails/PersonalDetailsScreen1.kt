@@ -2,9 +2,12 @@
 
 package com.example.nutripal.ui.screen.personaldetails
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,13 +29,16 @@ import com.example.nutripal.ui.custom.personaldetails.CustomGenderDropdown
 import com.example.nutripal.ui.custom.personaldetails.CustomNameInput
 import com.example.nutripal.ui.custom.personaldetails.CustomProfilePhotoSelector
 import com.example.nutripal.ui.theme.NunitoFontFamily
-import com.example.nutripal.viewmodel.PersonalDetailsViewModel
 
 @Composable
 fun PersonalDetailsScreen1(
     viewModel: PersonalDetailsViewModel = viewModel(),
     navController: NavController,
 ) {
+    val isExpanded = remember { mutableStateOf(false) }
+
+    // Get the selected profile photo URI from ViewModel
+    val profilePictureUri = viewModel.profilePictureUri.value
 
     MainStatusBar()
 
@@ -95,18 +101,25 @@ fun PersonalDetailsScreen1(
         // Gender Dropdown
         CustomGenderDropdown(
             selectedGender = viewModel.selectedGender.value,
-            isExpanded = viewModel.isDropdownExpanded.value,
-            onExpandedChange = { viewModel.toggleDropdown() },
-            onGenderSelected = { viewModel.updateGender(it) },
-            onDismiss = { viewModel.dismissDropdown() }
+            isExpanded = isExpanded.value,
+            onExpandedChange = { isExpanded.value = !isExpanded.value },
+            onGenderSelected = { gender ->
+                viewModel.updateGender(gender)
+            },
+            onDismiss = { isExpanded.value = false }
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         // Profile Photo Selector
         CustomProfilePhotoSelector(
-            onPhotoClick = { /* Handle photo selection */ }
+            imageUri = profilePictureUri,
+            onPhotoSelected = { uri ->
+                viewModel.updateProfilePicture(uri)
+                Log.d("PersonalDetailsScreen", "Photo selected: $uri")
+            }
         )
+
 
         Spacer(modifier = Modifier.height(4.dp))
 
@@ -117,7 +130,11 @@ fun PersonalDetailsScreen1(
             ToggleGreenButton(
                 text = "Lanjut",
                 enabled = viewModel.isFormValid.value,
-                onClick = { navController.navigate("personal_details_screen_2") }
+                onClick = {
+                    viewModel.updatePage(1)
+                    val profilePictureString = profilePictureUri?.toString() ?: ""
+                    navController.navigate("personal_details_screen_2?name=${viewModel.name.value}&gender=${viewModel.selectedGender.value}&profilePicture=$profilePictureString")
+                }
             )
         }
     }

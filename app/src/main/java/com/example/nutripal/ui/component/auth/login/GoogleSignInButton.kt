@@ -23,12 +23,11 @@ import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.NunitoFontFamily
 
 @Composable
-fun GoogleSignInButton(onClick: () -> Unit) {
+fun GoogleSignInButton(onClick: () -> Unit, modifier: Modifier) {
     OutlinedButton(
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .height(48.dp),
         border = BorderStroke(0.5.dp, color = Disabled),
         shape = RoundedCornerShape(12.dp)

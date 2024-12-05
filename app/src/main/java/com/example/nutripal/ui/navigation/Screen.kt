@@ -22,4 +22,11 @@ sealed class Screen(val route: String) {
     }
     data object Profile : Screen("profile")
     data object EditProfile : Screen("edit_profile")
+    data object Scanner : Screen("scanner")
+    data object ResultScreen : Screen("result_screen")
+    data object ForgotPassword : Screen("forgot_password")
+    data object ResetPasswordSent : Screen("reset_password_sent/{email}")
+    data object ResetPasswordSuccesfull : Screen("reset_password_succesfull")
+    data object ResetPasswordFailed : Screen("reset_password_failed")
+    data object AboutApp : Screen("about_app")
 }

@@ -80,10 +80,23 @@ dependencies {
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.firebase.auth.ktx)
     implementation (libs.androidx.foundation)
+
+    //tflite
     implementation(libs.tensorflow.lite.support)
     implementation(libs.tensorflow.lite.metadata)
+
     implementation(libs.play.services.auth.v2000)
+    implementation(libs.androidx.runner)
+    implementation(libs.androidx.espresso.core)
+    implementation(libs.play.services.vision.common)
     implementation(libs.play.services.auth.v2000)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.activity)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.tensorflow.lite.gpu)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -100,6 +113,7 @@ dependencies {
     implementation ("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation(libs.androidx.navigation.compose)
 
+
     implementation(libs.androidx.ui.v140)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
@@ -115,17 +129,30 @@ dependencies {
 
     implementation (libs.androidx.material)
 
-    //ocr
-    implementation (libs.text.recognition)
-
     //status bar
     implementation (libs.google.accompanist.systemuicontroller)
 
+    //api call
     implementation (libs.retrofit)
     implementation (libs.converter.gson)
     implementation (libs.logging.interceptor)
 
+    //splash screen
     implementation (libs.androidx.core.splashscreen)
+
+    //ocr
+    implementation (libs.play.services.mlkit.text.recognition)
+
+    //camerax
+    val cameraxVersion = "1.3.1"
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+
+    //cropping
+    implementation(libs.ucrop)
+    implementation("com.vanniktech:android-image-cropper:4.6.0")
 }
 
 kapt {

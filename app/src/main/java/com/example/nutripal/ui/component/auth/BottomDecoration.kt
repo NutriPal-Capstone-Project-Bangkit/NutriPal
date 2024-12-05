@@ -3,6 +3,8 @@
 package com.example.nutripal.ui.component.auth
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -22,6 +24,8 @@ fun CustomCanvas(
 ) {
     Canvas(
         modifier = modifier
+            .fillMaxWidth()
+            .heightIn(max = 150.dp)
     ) {
         val canvasWidth = size.width
         val canvasHeight = size.height

@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -26,6 +27,9 @@ import com.example.nutripal.ui.component.home.news.NewsItemCard
 import com.example.nutripal.ui.navigation.Screen
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.darkGray
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun HomeHeader() {
@@ -107,7 +111,6 @@ fun DailyNutritionCard() {
     }
 }
 
-
 @Composable
 fun HomeContent(
     navController: NavController,
@@ -139,6 +142,7 @@ fun HomeContent(
 
 @Composable
 fun DateDisplay() {
+    val currentDate = SimpleDateFormat("d MMM yyyy", Locale.getDefault()).format(Date())
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -147,7 +151,7 @@ fun DateDisplay() {
             .padding(horizontal = 12.dp, vertical = 6.dp) // Padding untuk teks
     ) {
         Text(
-            text = "Today, 8 Nov 2024",
+            text = "Today, $currentDate",
             color = darkGray,
             fontSize = 12.sp,
             fontFamily = NunitoFontFamily,
@@ -196,12 +200,18 @@ fun NutriAIButton(navController: NavController) {
 
 @Composable
 fun AdsSection() {
+    val ads = listOf(
+        R.drawable.ads1,
+        R.drawable.ads2,
+        R.drawable.ads3
+    )
+
     LazyRow(
         modifier = Modifier.padding(vertical = 16.dp),
         horizontalArrangement = Arrangement.Start
     ) {
-        items(5) {
-            AdsFrame()
+        items(ads) { ad ->
+            AdsFrame(imagePainter = painterResource(id = ad))
             Spacer(modifier = Modifier.width(16.dp))
         }
     }

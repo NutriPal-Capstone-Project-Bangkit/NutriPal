@@ -22,17 +22,22 @@ import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.PersonalDetailsHeader
 import com.example.nutripal.ui.component.auth.ToggleGreenButton
 import com.example.nutripal.ui.theme.NunitoFontFamily
-import com.example.nutripal.viewmodel.PersonalDetailsViewModel
 import com.example.nutripal.ui.custom.personaldetails.CustomFrame
-import com.example.nutripal.ui.navigation.Screen
 
 @Composable
 fun PersonalDetailsScreen2(
     viewModel: PersonalDetailsViewModel = viewModel(),
-    navController: NavController
+    navController: NavController,
+    name: String?,
+    gender: String?,
+    profilePicture: String?
 ) {
     val selectedFrameId = remember { mutableStateOf(-1) }
     val isButtonEnabled = selectedFrameId.value != -1
+    val viewModel: PersonalDetailsViewModel = viewModel()
+    viewModel.updateName(name ?: "")
+    viewModel.updateGender(gender ?: "")
+    viewModel.updateProfilePictureFromString(profilePicture)
 
     MainStatusBar()
 
@@ -75,9 +80,21 @@ fun PersonalDetailsScreen2(
 
         // List of frames with their data
         val frames = listOf(
-            FrameData(R.drawable.ic_umum, "Umum", "Pengguna yang ingin menjaga kesehatan\nsecara keseluruhan tanpa tujuan khusus."),
-            FrameData(R.drawable.ic_diet, "Diet", "Pengguna yang ingin menjaga berat badan\natau menjalankan pola makan seimbang."),
-            FrameData(R.drawable.ic_atlet, "Atlet", "Pengguna yang aktif berolahraga dan\nmembutuhkan asupan gizi lebih.")
+            FrameData(
+                R.drawable.ic_umum,
+                "Umum",
+                "Pengguna yang ingin menjaga kesehatan\nsecara keseluruhan tanpa tujuan khusus."
+            ),
+            FrameData(
+                R.drawable.ic_diet,
+                "Diet",
+                "Pengguna yang ingin menjaga berat badan\natau menjalankan pola makan seimbang."
+            ),
+            FrameData(
+                R.drawable.ic_atlet,
+                "Atlet",
+                "Pengguna yang aktif berolahraga dan\nmembutuhkan asupan gizi lebih."
+            )
         )
 
         // Render CustomFrame for each item
@@ -98,15 +115,26 @@ fun PersonalDetailsScreen2(
         ToggleGreenButton(
             text = "Simpan",
             enabled = isButtonEnabled,
-            onClick = { navController.navigate(Screen.Home.route) }
+            onClick = {
+                val selectedLifestyle = frames[selectedFrameId.value].title
+
+                viewModel.saveProfile(
+                    name = name ?: "",
+                    gender = gender ?: "",
+                    lifestyle = selectedLifestyle,
+                    profilePicture = profilePicture ?: "" // pass the profile picture
+                )
+
+                navController.navigate("personal_detail_saved")
+            }
         )
 
-    }
+        }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun PersonalDetailsScreen2Preview() {
     val navController = rememberNavController()
-    PersonalDetailsScreen2(viewModel = viewModel(), navController)
+    PersonalDetailsScreen2(viewModel = viewModel(), navController, "", "", "")
 }
