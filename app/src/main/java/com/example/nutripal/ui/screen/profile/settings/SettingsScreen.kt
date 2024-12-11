@@ -61,7 +61,7 @@ fun SettingsScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Back",
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -76,9 +76,9 @@ fun SettingsScreen(
             ) {
                 // TextField untuk Email
                 TextField(
-                    value = "", // Replace with the state variable if needed
-                    onValueChange = { /* Tidak perlu mengubah value */ },
-                    enabled = false, // Nonaktifkan klik pada TextField
+                    value = "",
+                    onValueChange = { },
+                    enabled = false,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),

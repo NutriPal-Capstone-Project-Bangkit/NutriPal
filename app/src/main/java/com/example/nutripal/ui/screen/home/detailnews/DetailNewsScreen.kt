@@ -46,7 +46,7 @@ fun NewsDetailScreen(
                         color = Primary,
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
-                            fontSize = 24.sp,
+                            fontSize = 18.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -55,7 +55,8 @@ fun NewsDetailScreen(
                     IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
-                            contentDescription = "Back"
+                            contentDescription = "Back",
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -112,7 +113,7 @@ fun NewsDetailScreen(
                     text = newsDetail?.title.orEmpty(),
                     style = TextStyle(
                         fontFamily = NunitoFontFamily,
-                        fontSize = 20.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     ),
                     lineHeight = 28.sp
@@ -126,7 +127,7 @@ fun NewsDetailScreen(
                         text = formatDate(date),
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
-                            fontSize = 14.sp,
+                            fontSize = 12.sp,
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -141,7 +142,7 @@ fun NewsDetailScreen(
                         text = description,
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onSurface
                         )
@@ -156,7 +157,7 @@ fun NewsDetailScreen(
                         text = Html.fromHtml(content, Html.FROM_HTML_MODE_LEGACY).toString(),
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
-                            fontSize = 16.sp,
+                            fontSize = 14.sp,
                             fontWeight = FontWeight.Normal,
                             color = MaterialTheme.colorScheme.onSurface
                         )

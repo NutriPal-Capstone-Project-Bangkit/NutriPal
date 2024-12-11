@@ -11,9 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.nutripal.data.local.NutritionDatabase
 import com.example.nutripal.data.local.NutritionDatabase.Companion.getDatabase
-import com.example.nutripal.data.local.dao.HistoryDao
 import com.example.nutripal.data.model.NutritionFacts
 import com.example.nutripal.data.remote.retrofit.ApiConfig
 import com.example.nutripal.data.repository.HistoryRepository
@@ -44,6 +42,7 @@ import com.example.nutripal.ui.screen.profile.edit.EditProfileScreen
 import com.example.nutripal.ui.screen.profile.edit.EditProfileViewModel
 import com.example.nutripal.ui.screen.profile.history.HistoryScanScreen
 import com.example.nutripal.ui.screen.profile.history.HistoryScanViewModel
+import com.example.nutripal.ui.screen.profile.history.details.HistoryScanDetailsScreen
 import com.example.nutripal.ui.screen.profile.history.details.HistoryScanDetailsViewModel
 import com.example.nutripal.ui.screen.profile.settings.SettingsScreen
 import com.example.nutripal.ui.screen.profile.settings.SettingsViewModel
@@ -51,14 +50,12 @@ import com.example.nutripal.ui.screen.profile.settings.change.email.ChangeEmailS
 import com.example.nutripal.ui.screen.profile.settings.change.password.ChangePasswordScreen
 import com.example.nutripal.ui.screen.scan.CropScreen
 import com.example.nutripal.ui.screen.scan.camera.CameraScreen
-import com.example.nutripal.ui.screen.profile.history.details.HistoryScanDetailsScreen
 import com.example.nutripal.ui.screen.scan.result.ResultScreen
 import com.example.nutripal.ui.screen.scan.result.savetodaily.AddToDailyNutritionScreen
 import com.example.nutripal.ui.screen.scan.result.savetodaily.success.AddToDailySuccessScreen
 import com.example.nutripal.ui.screen.splash.SplashScreen
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
@@ -135,7 +132,7 @@ fun AppNavigation() {
             val age = backStackEntry.arguments?.getString("age")
             val height = backStackEntry.arguments?.getString("height")
             val weight = backStackEntry.arguments?.getString("weight")
-            PersonalDetailsScreen2(viewModel(), navController, name, gender, profilePicture, age, weight, height )
+            PersonalDetailsScreen2(viewModel(), navController, name, gender, context, profilePicture, age, weight, height)
         }
 
         composable(Screen.EmailVerification.route) {
@@ -196,7 +193,7 @@ fun AppNavigation() {
 
             val apiService = ApiConfig.getProfileApiService()
 
-            val viewModel = EditProfileViewModel(apiService = apiService, uid = uid)
+            val viewModel = EditProfileViewModel(uid = uid)
 
             EditProfileScreen(
                 viewModel = viewModel,
@@ -245,7 +242,7 @@ fun AppNavigation() {
 
             val historyDao = getDatabase(context).historyDao()
 
-            val historyRepository = HistoryRepository(firestore = firestore, historyDao = historyDao, auth = auth)
+            val historyRepository = HistoryRepository(firestore = firestore, historyDao = historyDao, auth = auth, context = context)
 
             val historyScanViewModel = HistoryScanViewModel(historyRepository = historyRepository)
 

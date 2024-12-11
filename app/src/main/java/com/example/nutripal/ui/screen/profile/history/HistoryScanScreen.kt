@@ -70,7 +70,7 @@ fun HistoryScanScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Back",
-                            modifier = Modifier.size(18.dp)
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 },
@@ -134,7 +134,7 @@ fun PreviewHistoryScreen() {
     val context = LocalContext.current
     val historyDao = getDatabase(context).historyDao()
 
-    val historyRepository = HistoryRepository(firestore = firestore, historyDao = historyDao, auth = auth)
+    val historyRepository = HistoryRepository(firestore = firestore, historyDao = historyDao, auth = auth, context = LocalContext.current)
 
     val historyScanViewModel = HistoryScanViewModel(historyRepository = historyRepository)
 

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -114,7 +115,7 @@ fun ResultScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Result",
+                        text = "Hasil",
                         color = Primary,
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
@@ -128,6 +129,7 @@ fun ResultScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Back",
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }
@@ -218,7 +220,7 @@ fun ResultScreen(
 
                         navController.currentBackStackEntry?.savedStateHandle?.set(
                             "recommendation",
-                            generatedRecommendation ?: ""  // Pastikan untuk memberikan default value jika null
+                            generatedRecommendation ?: ""
                         )
 
                         navController.navigate(

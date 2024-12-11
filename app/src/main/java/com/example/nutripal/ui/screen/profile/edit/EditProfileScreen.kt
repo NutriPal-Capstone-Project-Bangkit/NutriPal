@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.nutripal.ui.screen.profile.edit
 
 import android.net.Uri
@@ -54,7 +56,6 @@ import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.example.nutripal.R
-import com.example.nutripal.data.remote.retrofit.ApiConfig
 import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.auth.ToggleGreenButton
 import com.example.nutripal.ui.custom.personaldetails.CustomAgeInput
@@ -418,9 +419,7 @@ fun EditPreview() {
     val uid = currentUser?.uid ?: ""
     val navController = rememberNavController()
 
-    val apiService = ApiConfig.getProfileApiService()
-
-    val viewModel = EditProfileViewModel(apiService = apiService, uid = uid)
+    val viewModel = EditProfileViewModel( uid = uid)
 
     EditProfileScreen(
         viewModel = viewModel,

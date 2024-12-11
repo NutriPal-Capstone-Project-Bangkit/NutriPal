@@ -3,15 +3,13 @@ package com.example.nutripal.ui.screen.profile
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.nutripal.data.remote.retrofit.ProfileApiService
+import com.example.nutripal.data.remote.retrofit.ApiConfig
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class ProfileViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -24,12 +22,7 @@ class ProfileViewModel(
     private val _profileState = MutableStateFlow<ProfileData?>(null)
     val profileState: StateFlow<ProfileData?> = _profileState
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://d817-2001-448a-2040-b8f6-45a1-836a-d0c9-a706.ngrok-free.app/") // Note the trailing slash
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val profileService = retrofit.create(ProfileApiService::class.java)
+    private val profileService = ApiConfig.getProfileApiService()
 
     fun fetchCurrentUserProfile() {
         val currentUser = auth.currentUser

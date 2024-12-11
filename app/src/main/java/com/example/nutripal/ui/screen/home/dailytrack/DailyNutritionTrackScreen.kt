@@ -195,7 +195,7 @@ private fun DailyNutritionTopBar(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_back),
                     contentDescription = "Back",
-                    modifier = Modifier.size(18.dp),
+                    modifier = Modifier.size(20.dp),
                     tint = Color.Black
                 )
             }

@@ -37,8 +37,8 @@ fun ReadMoreButton(newsDetail: ArticlesItem?) {
         colors = ButtonDefaults.buttonColors(containerColor = Primary),
         modifier = Modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .clip(RoundedCornerShape(12.dp))
+            .height(48.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Text(
             text = "Baca Selengkapnya",

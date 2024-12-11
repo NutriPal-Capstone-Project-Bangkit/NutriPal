@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.nutripal.data.remote.response.Profile
-import com.example.nutripal.data.remote.retrofit.ProfileApiService
+import com.example.nutripal.data.remote.retrofit.ApiConfig
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
@@ -13,13 +13,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class EditProfileViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
-    private val apiService: ProfileApiService,
     private val uid: String
 ) : ViewModel() {
 
@@ -31,12 +28,8 @@ class EditProfileViewModel(
 
     private val storage = FirebaseStorage.getInstance()
 
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://d817-2001-448a-2040-b8f6-45a1-836a-d0c9-a706.ngrok-free.app/") // Base URL for the API
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val profileService = ApiConfig.getProfileApiService()
 
-    private val profileService = retrofit.create(ProfileApiService::class.java)
     private val firestore = FirebaseFirestore.getInstance()
     private val _updateStatus = MutableStateFlow<String?>(null)
     val updateStatus: StateFlow<String?> = _updateStatus
@@ -47,7 +40,7 @@ class EditProfileViewModel(
     private val _temporaryProfilePicture = MutableStateFlow<String?>(null)
     val temporaryProfilePicture: StateFlow<String?> = _temporaryProfilePicture
 
-    fun setTemporaryProfilePicture(pictureUrl: String) {
+    private fun setTemporaryProfilePicture(pictureUrl: String) {
         _temporaryProfilePicture.value = pictureUrl
     }
 

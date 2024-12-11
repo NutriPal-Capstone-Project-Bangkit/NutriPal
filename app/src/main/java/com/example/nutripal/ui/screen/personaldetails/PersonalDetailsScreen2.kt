@@ -1,5 +1,7 @@
 package com.example.nutripal.ui.screen.personaldetails
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +36,7 @@ fun PersonalDetailsScreen2(
     navController: NavController,
     name: String?,
     gender: String?,
+    context: Context,
     profilePicture: String?,
     age: String?,
     weight: String?,
@@ -122,8 +126,8 @@ fun PersonalDetailsScreen2(
                     image = frame.image,
                     title = frame.title,
                     subtitle = frame.subtitle,
-                    frameId = index, // Passing the index as the unique frame ID
-                    selectedFrameId = selectedFrameId.intValue, // Passing the currently selected frame ID
+                    frameId = index,
+                    selectedFrameId = selectedFrameId.intValue,
                     onFrameSelected = { selectedFrameId.intValue = it } // Update selected frame
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -144,9 +148,9 @@ fun PersonalDetailsScreen2(
                 text = "Simpan",
                 enabled = isButtonEnabled,
                 onClick = {
-                    // Tambahkan ini untuk mengupdate activity level
                     viewModel.updateActivityLevel(frames[selectedFrameId.intValue].title)
 
+                    // Add a callback to handle success and failure
                     viewModel.saveProfile(
                         name = name ?: "",
                         gender = gender ?: "",
@@ -154,10 +158,18 @@ fun PersonalDetailsScreen2(
                         weight = weight ?: "",
                         height = height ?: "",
                         activityLevel = frames[selectedFrameId.intValue].title,
-                        profilePicture = profilePicture ?: ""
+                        profilePicture = profilePicture ?: "",
+                        onSuccess = {
+                            navController.navigate("personal_detail_saved")
+                        },
+                        onFailure = { errorMessage ->
+                            Toast.makeText(
+                                context,
+                                "Gagal menyimpan profil: $errorMessage",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     )
-
-                    navController.navigate("personal_detail_saved")
                 }
             )
         }
@@ -176,6 +188,7 @@ fun PersonalDetailsScreen2Preview() {
         age = "",
         weight = "",
         height = "",
-        profilePicture = ""
+        profilePicture = "",
+        context = LocalContext.current
     )
 }

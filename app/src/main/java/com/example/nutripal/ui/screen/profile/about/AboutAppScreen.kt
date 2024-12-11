@@ -43,7 +43,7 @@ fun AboutAppScreen(navController: NavController) {
                         color = Color.White, // Set text color to white
                         style = TextStyle(
                             fontFamily = NunitoFontFamily,
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.Bold
                         )
                     )
@@ -53,7 +53,8 @@ fun AboutAppScreen(navController: NavController) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Back",
-                            tint = Color.White // Set the icon color to white
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White
                         )
                     }
                 },
@@ -75,6 +76,7 @@ fun AboutAppScreen(navController: NavController) {
                 painter = painterResource(id = R.drawable.about_app),
                 contentDescription = "About App Image",
                 modifier = Modifier
+                    .size(320.dp)
                     .align(Alignment.Center)
                     .padding(16.dp)
             )
@@ -85,7 +87,8 @@ fun AboutAppScreen(navController: NavController) {
                 contentDescription = "Spoon Logo Left",
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .padding(top = 56.dp)
+                    .offset(x = (-12).dp)
+                    .padding(top = 20.dp)
                     .size(200.dp)
             )
 

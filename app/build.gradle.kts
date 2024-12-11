@@ -36,6 +36,7 @@ android {
             "GEMINI_API_KEY" to getLocalProperty("GEMINI_API_KEY"),
             "NEWS_BASE_URL" to getLocalProperty("NEWS_BASE_URL"),
             "NEWS_API_KEY" to getLocalProperty("NEWS_API_KEY"),
+            "PROFILE_BASE_URL" to getLocalProperty("PROFILE_BASE_URL"),
             "REFRESH_TOKEN_BASE_URL" to getLocalProperty("REFRESH_TOKEN_BASE_URL"),
             "VERTEX_BASE_URL" to getLocalProperty("VERTEX_BASE_URL")
         )

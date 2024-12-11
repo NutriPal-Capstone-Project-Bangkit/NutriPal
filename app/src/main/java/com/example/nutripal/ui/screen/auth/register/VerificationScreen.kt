@@ -2,9 +2,15 @@ package com.example.nutripal.ui.screen.auth.register
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,11 +35,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.R
-import com.example.nutripal.data.remote.retrofit.ProfileApiService
-import com.example.nutripal.data.repository.AuthRepository
 import com.example.nutripal.ui.component.MainStatusBar
-import com.example.nutripal.ui.component.auth.regist.StatusDialog
 import com.example.nutripal.ui.component.auth.ToggleGreenButton
+import com.example.nutripal.ui.component.auth.regist.StatusDialog
 import com.example.nutripal.ui.navigation.Screen
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.Primary
@@ -82,7 +86,6 @@ fun VerificationScreen(
         }
     )
 
-    // UI untuk tampilan verifikasi
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,6 +102,7 @@ fun VerificationScreen(
                 contentDescription = "Back",
                 modifier = Modifier
                     .align(Alignment.CenterStart)
+                    .size(20.dp)
                     .clickable {
                         navController.popBackStack()
                     }
@@ -109,7 +113,7 @@ fun VerificationScreen(
                 style = TextStyle(
                     fontFamily = NunitoFontFamily,
                     fontWeight = FontWeight.SemiBold,
-                    fontSize = 22.sp,
+                    fontSize = 20.sp,
                     color = Primary
                 ),
                 modifier = Modifier.align(Alignment.Center)
@@ -136,10 +140,8 @@ fun VerificationScreen(
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        // Get current user's email from Firebase
         val currentEmail = FirebaseAuth.getInstance().currentUser?.email ?: ""
 
-        // Verification message with email
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {

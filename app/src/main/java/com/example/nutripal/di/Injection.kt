@@ -2,6 +2,7 @@ package com.example.nutripal.di
 
 import android.app.Application
 import android.content.Context
+import com.example.nutripal.BuildConfig
 import com.example.nutripal.data.auth.GoogleAuthClient
 import com.example.nutripal.data.local.NutritionDatabase
 import com.example.nutripal.data.local.dao.HistoryDao
@@ -81,7 +82,7 @@ object Injection {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiConfig.PROFILE_BASE_URL) // Replace with your API's base URL
+            .baseUrl(BuildConfig.PROFILE_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }

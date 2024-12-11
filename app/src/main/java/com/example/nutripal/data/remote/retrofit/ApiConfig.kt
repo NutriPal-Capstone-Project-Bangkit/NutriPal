@@ -6,11 +6,8 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.create
 
 object ApiConfig {
-
-    const val PROFILE_BASE_URL = "https://d817-2001-448a-2040-b8f6-45a1-836a-d0c9-a706.ngrok-free.app"
 
     fun getBotApiService(): BotApiService {
         return createRetrofit(GEMINI_BASE_URL).create(BotApiService::class.java)
@@ -21,7 +18,7 @@ object ApiConfig {
     }
 
     fun getProfileApiService(): ProfileApiService {
-        return createRetrofit(PROFILE_BASE_URL).create(ProfileApiService::class.java)
+        return createRetrofit(BuildConfig.PROFILE_BASE_URL).create(ProfileApiService::class.java)
     }
 
     fun getRefreshAuthTokenService(): RefreshAuthTokenService {

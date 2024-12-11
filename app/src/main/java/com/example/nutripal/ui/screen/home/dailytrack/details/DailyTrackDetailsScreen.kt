@@ -49,6 +49,7 @@ import com.example.nutripal.ui.theme.Primary
 import android.graphics.Bitmap
 import android.provider.MediaStore
 import android.widget.Toast
+import androidx.compose.foundation.layout.size
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @SuppressLint("RememberReturnType")
@@ -118,6 +119,7 @@ fun DailyTrackDetailsScreen(
                         Icon(
                             painter = painterResource(id = R.drawable.ic_back),
                             contentDescription = "Back",
+                            modifier = Modifier.size(20.dp)
                         )
                     }
                 }

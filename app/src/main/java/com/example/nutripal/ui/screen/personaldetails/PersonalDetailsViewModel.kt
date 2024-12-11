@@ -18,7 +18,6 @@ class PersonalDetailsViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val _currentPage = MutableStateFlow(0)
 
-    // Existing fields
     val name = mutableStateOf("")
     val selectedGender = mutableStateOf("")
     val isError = mutableStateOf(false)
@@ -26,13 +25,11 @@ class PersonalDetailsViewModel : ViewModel() {
     var profilePicture = mutableStateOf<String?>(null)
     val profilePictureUri = mutableStateOf<Uri?>(null)
 
-    // New fields
     val age = mutableStateOf("")
     val weight = mutableStateOf("")
     val height = mutableStateOf("")
     private val activityLevel = mutableStateOf("")
 
-    // Existing methods
     fun updateProfilePicture(uri: Uri?) {
         profilePictureUri.value = uri
         profilePicture.value = uri?.toString()
@@ -48,7 +45,6 @@ class PersonalDetailsViewModel : ViewModel() {
         _currentPage.value = page
     }
 
-    // Updated saveProfile method to include new fields
     fun saveProfile(
         name: String,
         gender: String,
@@ -56,18 +52,14 @@ class PersonalDetailsViewModel : ViewModel() {
         weight: String,
         height: String,
         activityLevel: String,
-        profilePicture: String? = null
+        profilePicture: String? = null,
+        onSuccess: (() -> Unit)? = null,
+        onFailure: ((String) -> Unit)? = null
     ) {
-        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        Log.d("ProfileSave", "Attempting to save profile with following details:")
-        Log.d("ProfileSave", "UID: $uid")
-        Log.d("ProfileSave", "Name: $name")
-        Log.d("ProfileSave", "Gender: $gender")
-        Log.d("ProfileSave", "Age: $age")
-        Log.d("ProfileSave", "Weight: $weight")
-        Log.d("ProfileSave", "Height: $height")
-        Log.d("ProfileSave", "Activity Level: $activityLevel")
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
+            onFailure?.invoke("Pengguna tidak terautentikasi")
+            return
+        }
 
         val profile = Profile(
             uid = uid,
@@ -85,23 +77,28 @@ class PersonalDetailsViewModel : ViewModel() {
 
         call.enqueue(object : Callback<ProfileResponse> {
             override fun onResponse(call: Call<ProfileResponse>, response: Response<ProfileResponse>) {
-                Log.d("ProfileSave", "Response received")
                 if (response.isSuccessful) {
                     Log.d("ProfileSave", "Profile saved successfully: ${response.body()}")
+                    onSuccess?.invoke()
                 } else {
                     Log.e("ProfileSave", "Profile save failed. Saving to Firestore...")
-                    saveProfileToFirestore(uid, profile)
+                    saveProfileToFirestore(uid, profile, onSuccess, onFailure)
                 }
             }
 
             override fun onFailure(call: Call<ProfileResponse>, t: Throwable) {
                 Log.e("ProfileSave", "Network error: ${t.message}. Saving to Firestore...")
-                saveProfileToFirestore(uid, profile)
+                saveProfileToFirestore(uid, profile, onSuccess, onFailure)
             }
         })
     }
 
-    private fun saveProfileToFirestore(uid: String, profile: Profile) {
+    private fun saveProfileToFirestore(
+        uid: String,
+        profile: Profile,
+        onSuccess: (() -> Unit)? = null,
+        onFailure: ((String) -> Unit)? = null
+    ) {
         val profileMap = mapOf(
             "uid" to uid,
             "name" to profile.name,
@@ -113,17 +110,15 @@ class PersonalDetailsViewModel : ViewModel() {
             "profilePicture" to profile.profilePicture
         )
 
-        Log.d("FirestoreSave", "Attempting to save profile map: $profileMap")
-
         firestore.collection("profiles").document(uid)
             .set(profileMap)
             .addOnSuccessListener {
                 Log.d("FirestoreSave", "Profile saved to Firestore successfully!")
-                Log.d("FirestoreSave", "Saved details: Name=${profile.name}, Age=${profile.age}, Weight=${profile.weight}, Height=${profile.height}, Activity Level=${profile.activityLevel}")
+                onSuccess?.invoke()
             }
             .addOnFailureListener { e ->
                 Log.e("FirestoreSave", "Error saving profile to Firestore: ${e.message}", e)
-                Log.e("FirestoreSave", "Failed profile map: $profileMap")
+                onFailure?.invoke(e.message ?: "Gagal menyimpan profil")
             }
     }
 
