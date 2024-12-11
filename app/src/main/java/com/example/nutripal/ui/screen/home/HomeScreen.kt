@@ -41,7 +41,6 @@ import com.example.nutripal.ui.theme.Primary
 fun HomeScreen(navController: NavController, saveState: Boolean = false) {
     val context = LocalContext.current
 
-    // Move BackHandler inside the composable function
     BackHandler {
         (context as? Activity)?.moveTaskToBack(true)
     }
@@ -77,7 +76,7 @@ fun HomeScreen(navController: NavController, saveState: Boolean = false) {
             ) {
                 HomeHeader()
                 Spacer(modifier = Modifier.height(24.dp))
-                DailyNutritionCard()
+                DailyNutritionCard(navController)
                 Spacer(modifier = Modifier.height(24.dp))
 
                 HomeContent(

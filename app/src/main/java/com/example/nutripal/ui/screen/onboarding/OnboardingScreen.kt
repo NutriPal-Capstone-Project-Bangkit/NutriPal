@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.example.nutripal.data.preferences.OnboardingPreferences
+import com.example.nutripal.data.local.preferences.OnboardingPreferences
 import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.PageIndicator
 import com.example.nutripal.ui.custom.onboarding.CustomNextButton

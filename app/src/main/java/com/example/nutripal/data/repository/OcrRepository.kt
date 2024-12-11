@@ -8,8 +8,9 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class OCRRepository {
+class OCRRepository @Inject constructor() {
 
     suspend fun extractNutritionalValues(bitmap: Bitmap): Map<String, String> {
         return withContext(Dispatchers.IO) {

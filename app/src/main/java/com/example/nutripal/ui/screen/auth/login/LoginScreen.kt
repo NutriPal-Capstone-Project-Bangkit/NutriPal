@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -101,14 +100,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), navController: NavC
     }
 
     LaunchedEffect(Unit) {
-        if (viewModel.isUserRemembered()) {
-            val savedLogin = viewModel.getSavedLogin()
-            if (savedLogin != null) {
-                viewModel.updateEmail(savedLogin.first)
-                viewModel.updatePassword(savedLogin.second)
-                viewModel.login(navController, rememberMe = true)
-            }
-        }
+        viewModel.checkUserRemembered(navController)
     }
 
     BackHandler {

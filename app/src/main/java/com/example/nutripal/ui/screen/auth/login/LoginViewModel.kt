@@ -32,14 +32,10 @@ class LoginViewModel @Inject constructor(
     private var _password = mutableStateOf("")
     val password = _password
 
-    private var _isLoginSuccess = mutableStateOf(false)
-    val isLoginSuccess = _isLoginSuccess
-
     private var _errorMessage = mutableStateOf("")
     val errorMessage = _errorMessage
 
     private var _isAuthenticated = mutableStateOf(false)
-    val isAuthenticated = _isAuthenticated
 
     private var _isLoading = mutableStateOf(false)
     val isLoading = _isLoading
@@ -73,7 +69,6 @@ class LoginViewModel @Inject constructor(
 
     fun login(navController: NavController, rememberMe: Boolean) {
         viewModelScope.launch {
-            // Reset error message before each login attempt
             _errorMessage.value = ""
 
             try {
@@ -81,7 +76,6 @@ class LoginViewModel @Inject constructor(
                 val result = authRepository.loginUser(email.value, password.value)
                 result.fold(
                     onSuccess = {
-                        // Clear any previous error message on successful login
                         _errorMessage.value = ""
 
                         if (rememberMe) {
@@ -95,7 +89,6 @@ class LoginViewModel @Inject constructor(
                         }
                     },
                     onFailure = { e ->
-                        // Translate common Firebase error messages
                         val errorMsg = when {
                             e.message?.contains("password is invalid", true) == true ->
                                 "Email atau password yang Anda masukkan salah."
@@ -156,11 +149,11 @@ class LoginViewModel @Inject constructor(
             .apply()
     }
 
-    fun isUserRemembered(): Boolean {
+    private fun isUserRemembered(): Boolean {
         return sharedPreferences.contains("email") && sharedPreferences.contains("password")
     }
 
-    fun getSavedLogin(): Pair<String, String>? {
+    private fun getSavedLogin(): Pair<String, String>? {
         val savedEmail = sharedPreferences.getString("email", null)
         val savedPassword = sharedPreferences.getString("password", null)
         return if (savedEmail != null && savedPassword != null) {
@@ -170,7 +163,79 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun checkUserProfile(uid: String, navController: NavController) {
+    fun checkUserRemembered(navController: NavController) {
+        viewModelScope.launch {
+            if (isUserRemembered()) {
+                val savedLogin = getSavedLogin()
+                if (savedLogin != null) {
+                    // First, try online login
+                    try {
+                        _isLoading.value = true
+                        val result = authRepository.loginUser(savedLogin.first, savedLogin.second)
+                        result.fold(
+                            onSuccess = {
+                                // Online login successful, proceed normally
+                                checkUserProfile(FirebaseAuth.getInstance().currentUser?.uid ?: "", navController)
+                            },
+                            onFailure = {
+                                // Online login failed, check for offline access
+                                checkOfflineAccess(navController)
+                            }
+                        )
+                    } catch (e: Exception) {
+                        // Any exception during online login, fall back to offline
+                        checkOfflineAccess(navController)
+                    } finally {
+                        _isLoading.value = false
+                    }
+                }
+            }
+        }
+    }
+
+    private suspend fun checkOfflineAccess(navController: NavController) {
+        // Check if the user has a complete profile in local storage or Firestore
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        if (uid != null) {
+            try {
+                val profileRef = FirebaseFirestore.getInstance().collection("profiles").document(uid)
+                val profileSnapshot = profileRef.get().await()
+
+                if (profileSnapshot.exists()) {
+                    val profile = profileSnapshot.toObject(Profile::class.java)
+
+                    if (profile != null &&
+                        !profile.name.isNullOrEmpty() &&
+                        !profile.gender.isNullOrEmpty() &&
+                        !profile.activityLevel.isNullOrEmpty() &&
+                        profile.height.isNotEmpty() &&
+                        profile.weight.isNotEmpty() &&
+                        profile.age.isNotEmpty()) {
+
+                        // User has a complete profile, navigate to home
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    } else {
+                        // Incomplete profile, navigate to profile completion
+                        navController.navigate(Screen.PersonalDetails1.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                } else {
+                    // No profile found, navigate to profile completion
+                    navController.navigate(Screen.PersonalDetails1.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                }
+            } catch (e: Exception) {
+                // Error accessing Firestore, show error or keep on login screen
+                _errorMessage.value = "Tidak dapat mengakses profil secara offline"
+            }
+        }
+    }
+
+    private fun checkUserProfile(uid: String, navController: NavController) {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
@@ -180,12 +245,14 @@ class LoginViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     val profile = response.body()
 
-                    if (!profile?.name.isNullOrEmpty() && !profile?.gender.isNullOrEmpty() && !profile?.lifestyle.isNullOrEmpty()) {
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                    if (profile != null) {
+                        if (!profile.name.isNullOrEmpty() && !profile.gender.isNullOrEmpty() && !profile.activityLevel.isNullOrEmpty() && profile.height.isNotEmpty() && profile.weight.isNotEmpty() && profile.age.isNotEmpty())  {
+                            navController.navigate(Screen.Home.route) {
+                                popUpTo(Screen.Login.route) { inclusive = true }
+                            }
+                        } else {
+                            checkProfileFromFirestore(uid, navController)
                         }
-                    } else {
-                        checkProfileFromFirestore(uid, navController)
                     }
                 } else {
                     checkProfileFromFirestore(uid, navController)
@@ -207,13 +274,15 @@ class LoginViewModel @Inject constructor(
             if (profileSnapshot.exists()) {
                 val profile = profileSnapshot.toObject(Profile::class.java)
 
-                if (profile != null && !profile.name.isNullOrEmpty() && !profile.gender.isNullOrEmpty() && !profile.lifestyle.isNullOrEmpty()) {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                } else {
-                    navController.navigate(Screen.PersonalDetails1.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
+                if (profile != null) {
+                    if (!profile.name.isNullOrEmpty() && !profile.gender.isNullOrEmpty() && !profile.activityLevel.isNullOrEmpty() && profile.height.isNotEmpty() && profile.weight.isNotEmpty() && profile.age.isNotEmpty()) {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Screen.PersonalDetails1.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
                     }
                 }
             } else {

@@ -17,11 +17,10 @@ import androidx.compose.ui.unit.sp
 import com.example.nutripal.R
 import com.example.nutripal.ui.theme.Disabled
 import com.example.nutripal.ui.theme.NunitoFontFamily
-import com.example.nutripal.ui.theme.Primary
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CustomDropdownLifestyle(
+fun CustomDropdownActivityLevel(
     selectedOption: String,
     isExpanded: Boolean,
     onExpandedChange: () -> Unit,
@@ -31,7 +30,7 @@ fun CustomDropdownLifestyle(
 ) {
     Column(modifier = modifier) {
         Text(
-            "Gaya Hidup",
+            "Level Aktivitas",
             style = TextStyle(
                 fontFamily = NunitoFontFamily,
                 fontWeight = FontWeight.SemiBold,
@@ -39,8 +38,6 @@ fun CustomDropdownLifestyle(
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
-
         ExposedDropdownMenuBox(
             expanded = isExpanded,
             onExpandedChange = { onExpandedChange() }
@@ -71,11 +68,11 @@ fun CustomDropdownLifestyle(
                     )
                 },
                 leadingIcon = {
-                    // Tampilkan ikon berdasarkan opsi yang dipilih
                     val iconResId = when (selectedOption) {
-                        "Umum" -> R.drawable.ic_general_rounded
-                        "Diet" -> R.drawable.ic_diet_rounded
-                        "Atlet" -> R.drawable.ic_athlete_rounded
+                        "Santai" -> R.drawable.ic_santai
+                        "Cukup Aktif" -> R.drawable.ic_cukup_aktif
+                        "Aktif" -> R.drawable.ic_aktif
+                        "Rutin" -> R.drawable.ic_rutin
                         else -> null
                     }
                     iconResId?.let {
@@ -114,14 +111,14 @@ fun CustomDropdownLifestyle(
                     text = {
                         Row {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_general_rounded),
-                                contentDescription = "Umum",
+                                painter = painterResource(id = R.drawable.ic_santai),
+                                contentDescription = "Santai",
                                 tint = Color.Unspecified,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                "Umum",
+                                "Santai",
                                 style = TextStyle(
                                     fontFamily = NunitoFontFamily,
                                     fontWeight = FontWeight.Normal,
@@ -131,7 +128,7 @@ fun CustomDropdownLifestyle(
                         }
                     },
                     onClick = {
-                        onOptionSelected("Umum")
+                        onOptionSelected("Santai")
                         onDismiss()
                     }
                 )
@@ -146,14 +143,14 @@ fun CustomDropdownLifestyle(
                     text = {
                         Row {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_diet_rounded),
-                                contentDescription = "Diet",
+                                painter = painterResource(id = R.drawable.ic_cukup_aktif),
+                                contentDescription = "Cukup Aktif",
                                 tint = Color.Unspecified,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                "Diet",
+                                "Cukup Aktif",
                                 style = TextStyle(
                                     fontFamily = NunitoFontFamily,
                                     fontWeight = FontWeight.Normal,
@@ -163,7 +160,7 @@ fun CustomDropdownLifestyle(
                         }
                     },
                     onClick = {
-                        onOptionSelected("Diet")
+                        onOptionSelected("Cukup Aktif")
                         onDismiss()
                     }
                 )
@@ -178,14 +175,14 @@ fun CustomDropdownLifestyle(
                     text = {
                         Row {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_athlete_rounded),
-                                contentDescription = "Atlet",
+                                painter = painterResource(id = R.drawable.ic_aktif),
+                                contentDescription = "Aktif",
                                 tint = Color.Unspecified,
                                 modifier = Modifier.size(32.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                "Atlet",
+                                "Aktif",
                                 style = TextStyle(
                                     fontFamily = NunitoFontFamily,
                                     fontWeight = FontWeight.Normal,
@@ -195,7 +192,39 @@ fun CustomDropdownLifestyle(
                         }
                     },
                     onClick = {
-                        onOptionSelected("Atlet")
+                        onOptionSelected("Aktif")
+                        onDismiss()
+                    }
+                )
+
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    thickness = 0.5.dp,
+                    color = Color(0xFFE1E1E1)
+                )
+
+                DropdownMenuItem(
+                    text = {
+                        Row {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_rutin),
+                                contentDescription = "Rutin",
+                                tint = Color.Unspecified,
+                                modifier = Modifier.size(32.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                "Rutin",
+                                style = TextStyle(
+                                    fontFamily = NunitoFontFamily,
+                                    fontWeight = FontWeight.Normal,
+                                    fontSize = 16.sp
+                                )
+                            )
+                        }
+                    },
+                    onClick = {
+                        onOptionSelected("Rutin")
                         onDismiss()
                     }
                 )

@@ -1,5 +1,6 @@
 package com.example.nutripal.ui.screen.profile.edit
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,8 +12,10 @@ import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class EditProfileViewModel(
     private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
@@ -41,6 +44,13 @@ class EditProfileViewModel(
     private val _isDataChanged = MutableStateFlow(false)
     val isDataChanged: StateFlow<Boolean> = _isDataChanged
 
+    private val _temporaryProfilePicture = MutableStateFlow<String?>(null)
+    val temporaryProfilePicture: StateFlow<String?> = _temporaryProfilePicture
+
+    fun setTemporaryProfilePicture(pictureUrl: String) {
+        _temporaryProfilePicture.value = pictureUrl
+    }
+
     init {
         fetchCurrentUserProfile()
     }
@@ -48,13 +58,24 @@ class EditProfileViewModel(
     fun checkIfDataChanged(
         name: String,
         gender: String,
-        lifestyle: String,
-        profilePicture: String
+        activityLevel: String,
+        profilePicture: String,
+        temporaryProfilePicture: String?,
+        age: String,
+        weight: String,
+        height: String
     ) {
         val currentProfile = _profileState.value
         if (currentProfile != null) {
             val isChanged =
-                currentProfile.name != name || currentProfile.gender != gender || currentProfile.lifestyle != lifestyle || currentProfile.profilePicture != profilePicture
+                currentProfile.name != name ||
+                        currentProfile.gender != gender ||
+                        currentProfile.activityLevel != activityLevel ||
+                        currentProfile.profilePicture != profilePicture ||
+                        temporaryProfilePicture != null || // Tambahkan kondisi ini
+                        currentProfile.age != age ||
+                        currentProfile.weight != weight ||
+                        currentProfile.height != height
             _isDataChanged.value = isChanged
         }
     }
@@ -72,8 +93,11 @@ class EditProfileViewModel(
                             _profileState.value = Profile(
                                 name = body.name,
                                 gender = body.gender,
-                                lifestyle = body.lifestyle,
-                                profilePicture = body.profilePicture
+                                activityLevel = body.activityLevel,
+                                profilePicture = body.profilePicture,
+                                age = body.age,
+                                weight = body.weight,
+                                height = body.height
                             )
                         }
                     } else {
@@ -96,8 +120,11 @@ class EditProfileViewModel(
                     val profile = Profile(
                         name = document.getString("name") ?: "",
                         gender = document.getString("gender") ?: "",
-                        lifestyle = document.getString("lifestyle") ?: "",
-                        profilePicture = document.getString("profilePicture")
+                        activityLevel = document.getString("activityLevel") ?: "",
+                        profilePicture = document.getString("profilePicture"),
+                        age = document.getString("age") ?: "",
+                        weight = document.getString("weight") ?: "",
+                        height = document.getString("height") ?: ""
                     )
                     _profileState.value = profile
                     Log.d("FirestoreFetch", "Fetched profile from Firestore: $profile")
@@ -111,14 +138,25 @@ class EditProfileViewModel(
     }
 
     // Update profile fields in Firestore
-    fun updateProfile(name: String, gender: String, lifestyle: String, profilePicture: String) {
+    fun updateProfile(
+        name: String,
+        gender: String,
+        activityLevel: String,
+        profilePicture: String,
+        age: String,
+        weight: String,
+        height: String
+    ) {
         val currentUser = auth.currentUser
         currentUser?.uid?.let { userId ->
             val updatedProfile = mapOf(
                 "name" to name,
                 "gender" to gender,
-                "lifestyle" to lifestyle,
-                "profilePicture" to profilePicture
+                "activityLevel" to activityLevel,
+                "profilePicture" to profilePicture,
+                "age" to age,
+                "weight" to weight,
+                "height" to height
             )
 
             firestore.collection("profiles").document(userId)
@@ -128,11 +166,13 @@ class EditProfileViewModel(
                     _profileState.value = Profile(
                         name = name,
                         gender = gender,
-                        lifestyle = lifestyle,
-                        profilePicture = profilePicture
+                        activityLevel = activityLevel,
+                        profilePicture = profilePicture,
+                        age = age,
+                        weight = weight,
+                        height = height
                     )
                     _updateStatus.value = "success"
-
                 }
                 .addOnFailureListener { e ->
                     Log.e("FirestoreUpdateError", "Error updating profile", e)
@@ -148,23 +188,85 @@ class EditProfileViewModel(
     fun updateProfilePictureUrl(pictureUrl: String) {
         val currentUser = auth.currentUser
         currentUser?.uid?.let { userId ->
-            // Directly update the profile picture URL in Firestore
             val updateData = mapOf("profilePicture" to pictureUrl)
 
+            Log.d("ProfilePictureUpdate", "Attempting to update picture URL for user $userId")
+            Log.d("ProfilePictureUpdate", "New profile picture URL: $pictureUrl")
+
             firestore.collection("profiles").document(userId)
-                .update(updateData)
-                .addOnSuccessListener {
-                    Log.d("ProfilePictureUpdate", "Profile picture URL updated successfully")
-
-                    // Update the current profile state
-                    _profileState.value = _profileState.value?.copy(profilePicture = pictureUrl)
-
-                    _updateStatus.value = "success"
+                .get()
+                .addOnSuccessListener { documentSnapshot ->
+                    if (documentSnapshot.exists()) {
+                        // Document exists, proceed with update
+                        firestore.collection("profiles").document(userId)
+                            .update(updateData)
+                            .addOnSuccessListener {
+                                Log.d("ProfilePictureUpdate", "Profile picture URL updated successfully in Firestore")
+                                _profileState.value = _profileState.value?.copy(profilePicture = pictureUrl)
+                                _updateStatus.value = "success"
+                                _temporaryProfilePicture.value = null
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ProfilePictureUpdateError", "Error updating profile picture URL", e)
+                                _updateStatus.value = "failure"
+                            }
+                    } else {
+                        // If document doesn't exist, set the data instead of updating
+                        firestore.collection("profiles").document(userId)
+                            .set(updateData)
+                            .addOnSuccessListener {
+                                Log.d("ProfilePictureUpdate", "Profile picture URL set in new Firestore document")
+                                _profileState.value = _profileState.value?.copy(profilePicture = pictureUrl)
+                                _updateStatus.value = "success"
+                                _temporaryProfilePicture.value = null
+                            }
+                            .addOnFailureListener { e ->
+                                Log.e("ProfilePictureUpdateError", "Error setting profile picture URL", e)
+                                _updateStatus.value = "failure"
+                            }
+                    }
                 }
                 .addOnFailureListener { e ->
-                    Log.e("ProfilePictureUpdateError", "Error updating profile picture URL", e)
+                    Log.e("ProfilePictureUpdateError", "Error checking document existence", e)
                     _updateStatus.value = "failure"
                 }
+        } ?: run {
+            Log.e("ProfilePictureUpdateError", "No current user found")
+            _updateStatus.value = "failure"
         }
     }
+
+    fun uploadProfilePicture(imageUri: Uri) {
+        viewModelScope.launch {
+            try {
+                // Create a reference to the profile picture in Firebase Storage
+                val storageRef = storage.reference
+                val profilePicRef = storageRef.child("profile_pictures/$uid.jpg")
+
+                // Upload the image
+                val uploadTask = profilePicRef.putFile(imageUri).await()
+
+                // Get the download URL
+                val downloadUrl = profilePicRef.downloadUrl.await().toString()
+
+                // Set temporary profile picture URL (belum disimpan ke Firestore)
+                setTemporaryProfilePicture(downloadUrl)
+            } catch (e: Exception) {
+                Log.e("ProfilePictureUpload", "Error uploading profile picture", e)
+                _updateStatus.value = "failure"
+            }
+        }
+    }
+    fun saveTemporaryProfilePicture() {
+        temporaryProfilePicture.value?.let { tempPictureUrl ->
+            updateProfilePictureUrl(tempPictureUrl)
+            // Reset temporary profile picture setelah disimpan
+            _temporaryProfilePicture.value = null
+        }
+    }
+
+    fun resetTemporaryProfilePicture() {
+        _temporaryProfilePicture.value = null
+    }
+
 }

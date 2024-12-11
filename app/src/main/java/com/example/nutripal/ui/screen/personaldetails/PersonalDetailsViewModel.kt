@@ -18,14 +18,21 @@ class PersonalDetailsViewModel : ViewModel() {
     private val firestore = FirebaseFirestore.getInstance()
     private val _currentPage = MutableStateFlow(0)
 
+    // Existing fields
     val name = mutableStateOf("")
     val selectedGender = mutableStateOf("")
     val isError = mutableStateOf(false)
     val isFormValid = mutableStateOf(false)
     var profilePicture = mutableStateOf<String?>(null)
     val profilePictureUri = mutableStateOf<Uri?>(null)
-    private val _profilePictureUri = MutableStateFlow<Uri?>(null)
 
+    // New fields
+    val age = mutableStateOf("")
+    val weight = mutableStateOf("")
+    val height = mutableStateOf("")
+    private val activityLevel = mutableStateOf("")
+
+    // Existing methods
     fun updateProfilePicture(uri: Uri?) {
         profilePictureUri.value = uri
         profilePicture.value = uri?.toString()
@@ -41,10 +48,14 @@ class PersonalDetailsViewModel : ViewModel() {
         _currentPage.value = page
     }
 
+    // Updated saveProfile method to include new fields
     fun saveProfile(
         name: String,
         gender: String,
-        lifestyle: String,
+        age: String,
+        weight: String,
+        height: String,
+        activityLevel: String,
         profilePicture: String? = null
     ) {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -53,13 +64,19 @@ class PersonalDetailsViewModel : ViewModel() {
         Log.d("ProfileSave", "UID: $uid")
         Log.d("ProfileSave", "Name: $name")
         Log.d("ProfileSave", "Gender: $gender")
-        Log.d("ProfileSave", "Lifestyle: $lifestyle")
+        Log.d("ProfileSave", "Age: $age")
+        Log.d("ProfileSave", "Weight: $weight")
+        Log.d("ProfileSave", "Height: $height")
+        Log.d("ProfileSave", "Activity Level: $activityLevel")
 
         val profile = Profile(
             uid = uid,
             name = name.trim(),
             gender = gender.trim(),
-            lifestyle = lifestyle,
+            age = age.trim(),
+            weight = weight.trim(),
+            height = height.trim(),
+            activityLevel = activityLevel,
             profilePicture = profilePicture
         )
 
@@ -89,18 +106,52 @@ class PersonalDetailsViewModel : ViewModel() {
             "uid" to uid,
             "name" to profile.name,
             "gender" to profile.gender,
-            "lifestyle" to profile.lifestyle,
+            "age" to profile.age,
+            "weight" to profile.weight,
+            "height" to profile.height,
+            "activityLevel" to profile.activityLevel,
             "profilePicture" to profile.profilePicture
         )
+
+        Log.d("FirestoreSave", "Attempting to save profile map: $profileMap")
 
         firestore.collection("profiles").document(uid)
             .set(profileMap)
             .addOnSuccessListener {
                 Log.d("FirestoreSave", "Profile saved to Firestore successfully!")
+                Log.d("FirestoreSave", "Saved details: Name=${profile.name}, Age=${profile.age}, Weight=${profile.weight}, Height=${profile.height}, Activity Level=${profile.activityLevel}")
             }
             .addOnFailureListener { e ->
-                Log.e("FirestoreSave", "Error saving profile to Firestore", e)
+                Log.e("FirestoreSave", "Error saving profile to Firestore: ${e.message}", e)
+                Log.e("FirestoreSave", "Failed profile map: $profileMap")
             }
+    }
+
+    // New methods for updating fields
+    fun updateAge(newAge: String) {
+        println("Updating age: $newAge")
+        age.value = newAge
+        validateForm()
+    }
+
+    fun updateWeight(newWeight: String) {
+        println("Updating weight: $newWeight")
+        weight.value = newWeight
+        validateForm()
+    }
+
+    fun updateHeight(newHeight: String) {
+        println("Updating height: $newHeight")
+        height.value = newHeight
+        validateForm()
+    }
+
+    fun updateActivityLevel(level: String) {
+        println("Updating activity level: $level")
+        if (level.isNotBlank()) {
+            activityLevel.value = level
+            validateForm()
+        }
     }
 
     fun updateName(newName: String) {
@@ -119,9 +170,13 @@ class PersonalDetailsViewModel : ViewModel() {
         println("Current gender in ViewModel: ${selectedGender.value}")
     }
 
+    // Updated validateForm method to include new fields
     private fun validateForm() {
         isFormValid.value = name.value.isNotEmpty() &&
                 selectedGender.value.isNotEmpty() &&
+                age.value.isNotEmpty() &&
+                weight.value.isNotEmpty() &&
+                height.value.isNotEmpty() &&
                 !isError.value
     }
 }

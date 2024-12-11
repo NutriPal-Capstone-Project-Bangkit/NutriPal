@@ -12,7 +12,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.ui.navigation.AppNavigation
 import com.example.nutripal.ui.theme.NutriPalTheme
 import com.google.firebase.FirebaseApp
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -20,6 +23,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         FirebaseApp.initializeApp(applicationContext)
+
+        FirebaseFirestore.getInstance().firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(true)
+            .build()
+
 
         setContent {
             val navController = rememberNavController()

@@ -2,6 +2,7 @@ package com.example.nutripal.ui.screen.scan.camera
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Rect
 import android.net.Uri
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -24,7 +25,8 @@ data class CameraScreenState(
     val imageUri: Uri? = null,
     val previewBitmap: Bitmap? = null,
     val detectedObjects: List<DetectedObject> = emptyList(),
-    val isFlashOn: Boolean = false
+    val isFlashOn: Boolean = false,
+    val boundingBox: Rect? = null
 )
 
 class CameraViewModel : ViewModel() {
@@ -79,23 +81,6 @@ class CameraViewModel : ViewModel() {
                 previewBitmap = bitmap,
                 detectedObjects = detectedObjects
             )
-        }
-    }
-
-    fun processImage(
-        context: Context,
-        imageUri: Uri,
-        onProcessed: (List<DetectedObject>) -> Unit
-    ) {
-        viewModelScope.launch {
-            processImage(context, imageUri) { resultBitmap, detectedObjects ->
-                _state.update { it.copy(
-                    imageUri = imageUri,
-                    previewBitmap = resultBitmap,
-                    detectedObjects = detectedObjects
-                ) }
-                onProcessed(detectedObjects)
-            }
         }
     }
 

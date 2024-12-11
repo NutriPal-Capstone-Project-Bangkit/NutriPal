@@ -3,14 +3,34 @@ package com.example.nutripal.ui.screen.scan.result
 import android.graphics.Bitmap
 import android.net.Uri
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +42,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.R
 import com.example.nutripal.data.model.NutritionFacts
-import com.example.nutripal.data.repository.OCRRepository
 import com.example.nutripal.ui.component.MainStatusBar
 import com.example.nutripal.ui.component.auth.ToggleGreenButton
 import com.example.nutripal.ui.component.home.chatbot.LoadingIndicator
@@ -35,19 +54,31 @@ import com.example.nutripal.ui.component.result.NutritionFactsView
 import com.example.nutripal.ui.component.result.RecommendationCard
 import com.example.nutripal.ui.theme.NunitoFontFamily
 import com.example.nutripal.ui.theme.Primary
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ResultScreen(
     navController: NavController,
     nutritionFacts: NutritionFacts,
-    recommendation: String
+    recommendation: String,
+    viewModel: ResultScreenViewModel = hiltViewModel()
 ) {
+
+    val accessToken by rememberUpdatedState(viewModel.accessToken)
+
+    val generatedRecommendation by viewModel.generatedRecommendation.observeAsState(initial = null)
+
+    if (accessToken != null) {
+        LaunchedEffect(accessToken) {
+            Log.d("ResultScreen", "Access Token: $accessToken")
+        }
+    }
 
     MainStatusBar()
     val context = LocalContext.current
     var bitmap by remember { mutableStateOf<Bitmap?>(null) }
-    val viewModel: ResultScreenViewModel = viewModel { ResultScreenViewModel(OCRRepository()) }
 
     // Retrieve the image URI
     val imageUri = navController.previousBackStackEntry
@@ -113,7 +144,7 @@ fun ResultScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 16.dp, vertical = 8.dp) // Adjust padding
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 // Display the image with a 3:4 aspect ratio
                 bitmap?.let { loadedBitmap ->
@@ -152,22 +183,52 @@ fun ResultScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Display recommendation
-                RecommendationCard(recommendation)
+                generatedRecommendation?.let { recommendation ->
+                    Log.d("ResultScreen", "Recommendation received: $recommendation")
+                    RecommendationCard(recommendation)
+                } ?: run {
+                    Log.w("ResultScreen", "Waiting for recommendation")
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        LoadingIndicator(text = "Memproses rekomendasi...")
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(100.dp))
             }
 
-            // Box wrapping the button
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
                     .background(Color.White)
-                    .padding(vertical = 16.dp) // Adjust padding inside the box
+                    .padding(vertical = 16.dp)
             ) {
                 ToggleGreenButton(
                     text = "Tambah ke Konsumsi Hari Ini",
-                    onClick = { /* Add logic for button click */ },
+                    enabled = generatedRecommendation != null,
+                    onClick = {
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "cropped_image_uri",
+                            imageUri
+                        )
+
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            "recommendation",
+                            generatedRecommendation ?: ""  // Pastikan untuk memberikan default value jika null
+                        )
+
+                        navController.navigate(
+                            "add_to_daily_nutrition_screen/" +
+                                    "${currentNutritionFacts?.carbohydrate ?: 0}/" +
+                                    "${currentNutritionFacts?.protein ?: 0}/" +
+                                    "${currentNutritionFacts?.fat ?: 0}/" +
+                                    URLEncoder.encode(generatedRecommendation ?: "", StandardCharsets.UTF_8.toString())
+                        )
+                    },
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(horizontal = 16.dp)
@@ -180,11 +241,11 @@ fun ResultScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun Preview() {
+fun Preview1() {
     val navController = rememberNavController()
     ResultScreen(
         navController = navController,
         nutritionFacts = NutritionFacts(30, 20, 20),
-        recommendation = "Rekomendasi: Konsumsi secukupnya"
+        recommendation = ""
     )
 }

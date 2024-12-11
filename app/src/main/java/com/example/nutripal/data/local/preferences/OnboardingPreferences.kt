@@ -1,4 +1,4 @@
-package com.example.nutripal.data.preferences
+package com.example.nutripal.data.local.preferences
 
 import android.content.Context
 import android.content.SharedPreferences

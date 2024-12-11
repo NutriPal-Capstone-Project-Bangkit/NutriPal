@@ -3,12 +3,15 @@ package com.example.nutripal.ui.component.home
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,17 +22,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.nutripal.R
 import com.example.nutripal.ui.component.LoadingAnimation
 import com.example.nutripal.ui.component.home.ads.AdsFrame
 import com.example.nutripal.ui.component.home.news.NewsItem
 import com.example.nutripal.ui.component.home.news.NewsItemCard
 import com.example.nutripal.ui.navigation.Screen
+import com.example.nutripal.ui.screen.home.dailytrack.DailyNutritionTrackViewModel
 import com.example.nutripal.ui.theme.NunitoFontFamily
+import com.example.nutripal.ui.theme.Primary
 import com.example.nutripal.ui.theme.darkGray
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import androidx.lifecycle.viewmodel.compose.viewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun HomeHeader() {
@@ -56,7 +65,23 @@ fun HomeHeader() {
 }
 
 @Composable
-fun DailyNutritionCard() {
+fun DailyNutritionCard(
+    navController: NavController,
+    viewModel: DailyNutritionTrackViewModel = viewModel()
+) {
+    val nutritionItems by viewModel.nutritionItems.collectAsState()
+    val selectedDate by viewModel.selectedDate.collectAsState()
+
+    // Recommended daily intake values
+    val recommendedCarbohydrate = 300 // g
+    val recommendedProtein = 200 // g
+    val recommendedFat = 150 // g
+
+    // Calculate total nutrients for the day
+    val totalCarbohydrate = nutritionItems.sumOf { it.carbohydrate }
+    val totalProtein = nutritionItems.sumOf { it.protein }
+    val totalFat = nutritionItems.sumOf { it.fat }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -73,41 +98,73 @@ fun DailyNutritionCard() {
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp
                 )
-                Spacer(modifier = Modifier.width(180.dp))
+                Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     painter = painterResource(id = R.drawable.ic_continue),
                     contentDescription = "Continue Icon",
                     tint = Color.Black,
-                    modifier = Modifier.size(16.dp)
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable {
+                            navController.navigate("daily_track")
+                        }
                 )
             }
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Carbohydrate Progress
             NutrientProgress(
                 label = "Karbohidrat",
-                progress = 0.8f,
+                progress = (totalCarbohydrate.toFloat() / recommendedCarbohydrate).coerceIn(0f, 1f),
                 color = Color(0xFF2196F2),
-                value = "800 g",
+                value = "$totalCarbohydrate g",
                 iconResId = R.drawable.ic_carbs
             )
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Protein Progress
             NutrientProgress(
                 label = "Protein",
-                progress = 0.5f,
+                progress = (totalProtein.toFloat() / recommendedProtein).coerceIn(0f, 1f),
                 color = Color(0xFFF67724),
-                value = "500 g",
+                value = "$totalProtein g",
                 iconResId = R.drawable.ic_protein
             )
             Spacer(modifier = Modifier.height(16.dp))
+
+            // Fat Progress
             NutrientProgress(
                 label = "Lemak",
-                progress = 0.5f,
+                progress = (totalFat.toFloat() / recommendedFat).coerceIn(0f, 1f),
                 color = Color(0xFFF13030),
-                value = "500 g",
+                value = "$totalFat g",
                 iconResId = R.drawable.ic_fat
             )
             Spacer(modifier = Modifier.height(16.dp))
-            DateDisplay()
+
+            // Date Display
+            DisplayDate(selectedDate = selectedDate)
         }
+    }
+}
+
+@Composable
+fun DisplayDate(selectedDate: LocalDate) {
+    val formattedDate = selectedDate.format(DateTimeFormatter.ofPattern("d MMM yyyy", Locale.getDefault()))
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentSize(Alignment.CenterEnd)
+            .border(0.5.dp, darkGray, RoundedCornerShape(16.dp))
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "Today, $formattedDate",
+            fontFamily = NunitoFontFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            color = darkGray
+        )
     }
 }
 
@@ -138,7 +195,6 @@ fun HomeContent(
         )
     }
 }
-
 
 @Composable
 fun DateDisplay() {
@@ -288,5 +344,5 @@ fun NewsSection(
 @Preview(showBackground = true)
 @Composable
 fun HomePreview(){
-    DailyNutritionCard()
+    DailyNutritionCard(navController = rememberNavController())
 }

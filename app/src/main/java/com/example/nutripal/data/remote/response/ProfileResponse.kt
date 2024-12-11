@@ -13,18 +13,27 @@ data class ProfileResponse(
 
 data class Profile(
 
-	@field:SerializedName("uid")
+    @field:SerializedName("uid")
 	val uid: String? = null,
 
-	@field:SerializedName("profilePicture")
+    @field:SerializedName("profilePicture")
 	val profilePicture: String? = null,
 
-	@field:SerializedName("gender")
+    @field:SerializedName("gender")
 	val gender: String? = null,
 
-	@field:SerializedName("name")
+    @field:SerializedName("name")
 	val name: String? = null,
 
-	@field:SerializedName("lifestyle")
-	val lifestyle: String? = null
-)
+    @field:SerializedName("activityLevel")
+	val activityLevel: String? = null,
+
+    @field:SerializedName("age")
+	val age: String = null.toString(),
+
+    @field:SerializedName("height")
+	val height: String = null.toString(),
+
+    @field:SerializedName("weight")
+	val weight: String = null.toString(),
+	)

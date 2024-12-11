@@ -6,6 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
 
 object ApiConfig {
 
@@ -21,6 +22,14 @@ object ApiConfig {
 
     fun getProfileApiService(): ProfileApiService {
         return createRetrofit(PROFILE_BASE_URL).create(ProfileApiService::class.java)
+    }
+
+    fun getRefreshAuthTokenService(): RefreshAuthTokenService {
+        return createRetrofit(BuildConfig.REFRESH_TOKEN_BASE_URL).create(RefreshAuthTokenService::class.java)
+    }
+
+    fun postVertexService(): VertexApiService {
+        return createRetrofit(BuildConfig.VERTEX_BASE_URL).create(VertexApiService::class.java)
     }
 
     private fun createRetrofit(baseUrl: String): Retrofit {

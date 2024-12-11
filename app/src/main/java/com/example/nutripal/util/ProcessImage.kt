@@ -14,7 +14,7 @@ import androidx.camera.core.ExperimentalGetImage
 import androidx.camera.core.ImageProxy
 import androidx.compose.ui.graphics.toArgb
 import com.example.nutripal.data.model.DetectedObject
-import com.example.nutripal.ml.ModelNutripal
+import com.example.nutripal.ml.ModelNutripal3
 import com.example.nutripal.ui.theme.Primary
 import org.tensorflow.lite.support.common.ops.NormalizeOp
 import org.tensorflow.lite.support.image.ImageProcessor
@@ -90,7 +90,7 @@ fun processImage(
         val tensorImage = TensorImage.fromBitmap(inputBitmap)
         val processedImage = imageProcessor.process(tensorImage)
 
-        val model = ModelNutripal.newInstance(context)
+        val model = ModelNutripal3.newInstance(context)
         val outputs = model.process(processedImage)
         val detectionResult = outputs.detectionResultList.get(0)
 
@@ -130,16 +130,15 @@ fun processImageProxy(
     // Get bitmap from imageProxy
     val bitmap = imageProxy.toBitmap()
 
-    val model = ModelNutripal.newInstance(context)
+    val model = ModelNutripal3.newInstance(context)
     val tensorImage = TensorImage.fromBitmap(bitmap)
 
     val outputs = model.process(tensorImage)
     val detectionResults = outputs.detectionResultList
 
-// Sort detections by confidence and take top 1
     val topDetection = detectionResults
         .sortedByDescending { it.scoreAsFloat }
-        .firstOrNull()  // Only take the top detection
+        .firstOrNull()
 
     val detectedObjects = if (topDetection != null) {
         listOf(DetectedObject(
@@ -183,5 +182,5 @@ fun processDetectionResults(
 
         detectedObjects.add(DetectedObject(box, classesBuffer, scoresBuffer))
     }
-    return detectedObjects
+    return detectedObjects      
 }

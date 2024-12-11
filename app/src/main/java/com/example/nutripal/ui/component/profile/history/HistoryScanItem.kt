@@ -2,8 +2,11 @@ package com.example.nutripal.ui.component.profile.history
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,52 +31,62 @@ fun HistoryScanItem(
     carbs: String,
     protein: String,
     fat: String,
+    onClick: () -> Unit,
     modifier: Modifier
 ) {
-    Row(
+    Card(
         modifier = Modifier
-            .size(width = 365.dp, height = 100.dp) // Ukuran tetap 365x100 dp
-            .background(color = Color.White, shape = RoundedCornerShape(12.dp))
+            .fillMaxWidth()
+            .size(width = 365.dp, height = 100.dp)
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        elevation = 4.dp
     ) {
-        // Image
-        Image(
-            painter = rememberAsyncImagePainter(model = imageUrl),
-            contentDescription = "Item Image",
-            modifier = Modifier
-                .size(100.dp)
-                .clip(RoundedCornerShape(12.dp))
-        )
-
-        Spacer(modifier = Modifier.width(16.dp))
-
-        Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
-            // Title
-            Text(
-                text = title,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                color = Color.Black,
-                modifier = Modifier.padding(vertical = 10.dp)
+        Row(modifier = Modifier.fillMaxSize()) {
+            // Image
+            Image(
+                painter = rememberAsyncImagePainter(model = imageUrl),
+                contentDescription = "Item Image",
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(12.dp))
             )
 
-            // Date and Time
-            Text(
-                text = dateTime,
-                fontSize = 12.sp,
-                fontFamily = NunitoFontFamily,
-                fontWeight = FontWeight.Normal,
-                color = Color.Gray,
-            )
+            Spacer(modifier = Modifier.width(16.dp))
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Column(modifier = Modifier.fillMaxHeight().weight(1f)) {
+                // Title
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    modifier = Modifier.padding(vertical = 10.dp)
+                )
 
-            // Nutrition Info Row
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                NutritionInfo(icon = R.drawable.ic_carbs, value = carbs, color = Color(0xFF2196F2))
-                Spacer(modifier = Modifier.width(12.dp))
-                NutritionInfo(icon = R.drawable.ic_protein, value = protein, color = Color(0xFFF67724))
-                Spacer(modifier = Modifier.width(12.dp))
-                NutritionInfo(icon = R.drawable.ic_fat, value = fat, color = Color(0XFFF13030))
+                // Date and Time
+                Text(
+                    text = dateTime,
+                    fontSize = 12.sp,
+                    fontFamily = NunitoFontFamily,
+                    fontWeight = FontWeight.Normal,
+                    color = Color.Gray,
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Nutrition Info Row
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    NutritionInfo(icon = R.drawable.ic_carbs, value = carbs, color = Color(0xFF2196F2))
+                    Spacer(modifier = Modifier.width(12.dp))
+                    NutritionInfo(
+                        icon = R.drawable.ic_protein,
+                        value = protein,
+                        color = Color(0xFFF67724)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    NutritionInfo(icon = R.drawable.ic_fat, value = fat, color = Color(0XFFF13030))
+                }
             }
         }
     }
@@ -109,6 +122,7 @@ fun PreviewHistoryScanItem() {
         carbs = "18g",
         protein = "3g",
         fat = "4g",
-        modifier = Modifier
+        modifier = Modifier,
+        onClick = {}
     )
 }

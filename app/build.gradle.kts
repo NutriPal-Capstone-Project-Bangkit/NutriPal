@@ -35,7 +35,9 @@ android {
             "GEMINI_BASE_URL" to getLocalProperty("GEMINI_BASE_URL"),
             "GEMINI_API_KEY" to getLocalProperty("GEMINI_API_KEY"),
             "NEWS_BASE_URL" to getLocalProperty("NEWS_BASE_URL"),
-            "NEWS_API_KEY" to getLocalProperty("NEWS_API_KEY")
+            "NEWS_API_KEY" to getLocalProperty("NEWS_API_KEY"),
+            "REFRESH_TOKEN_BASE_URL" to getLocalProperty("REFRESH_TOKEN_BASE_URL"),
+            "VERTEX_BASE_URL" to getLocalProperty("VERTEX_BASE_URL")
         )
 
         buildConfigFields.forEach { (key, value) ->
@@ -87,9 +89,7 @@ dependencies {
 
     implementation(libs.play.services.auth.v2000)
     implementation(libs.androidx.runner)
-    implementation(libs.androidx.espresso.core)
     implementation(libs.play.services.vision.common)
-    implementation(libs.play.services.auth.v2000)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.tensorflow.lite.gpu)
     implementation(libs.firebase.firestore.ktx)
     implementation(libs.firebase.storage.ktx)
+    implementation(libs.androidx.runtime.livedata)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -125,7 +126,6 @@ dependencies {
     implementation (libs.google.firebase.auth.ktx)
     implementation (libs.firebase.core)
     implementation (libs.kotlinx.coroutines.android)
-    implementation (libs.play.services.auth.v2000)
 
     implementation (libs.androidx.material)
 
@@ -153,6 +153,12 @@ dependencies {
     //cropping
     implementation(libs.ucrop)
     implementation("com.vanniktech:android-image-cropper:4.6.0")
+
+    //room
+    val room_version = "2.6.1"
+    implementation ("androidx.room:room-runtime:$room_version")
+    implementation ("androidx.room:room-ktx:$room_version")
+    kapt ("androidx.room:room-compiler:$room_version")
 }
 
 kapt {
