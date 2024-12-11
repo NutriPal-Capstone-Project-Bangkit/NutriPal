@@ -39,7 +39,7 @@ Nutripal is a mobile application designed to track users nutrition and provide p
 To install and use the NutriPal app, follow these steps:
 
 1. **Download the APK**
-   - You can download the latest APK from the [releases page](https://github.com/your-repo/nutripal/releases) (release app).
+   - You can download the latest APK from the [releases page](https://drive.google.com/file/d/1M-eWVPGcvlCf9xI9EHpg1Zh8gbTFbjx9/view?usp=drive_link).
 
 2. **Enable Unknown Sources (if needed)**
    - On your Android device, go to **Settings** > **Security** or **Apps & notifications**, and enable **Install from Unknown Sources** to allow installing APKs outside of the Play Store.
